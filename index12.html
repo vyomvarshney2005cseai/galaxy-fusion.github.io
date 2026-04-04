@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galaxy Fusion</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <meta name="theme-color" content="#0f766e">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+
+    <!-- Main Container -->
+    <div class="w-full max-w-md mx-auto bg-gray-50 shadow-2xl overflow-hidden min-h-screen flex flex-col relative">
+
+        <!-- Loading Spinner -->
+        <div id="loading-spinner"
+            class="hidden fixed inset-0 bg-white/80 backdrop-blur-sm flex flex-col items-center justify-center z-50">
+            <div class="w-12 h-12 border-4 border-teal-600 border-t-transparent rounded-full animate-spin mb-2"></div>
+            <p id="spinner-text" class="text-teal-800 font-semibold text-sm">Loading...</p>
+        </div>
+
+        <!-- Error Banner (Legacy - kept for fallback but hidden) -->
+        <div id="error-banner"
+            class="hidden fixed top-0 left-0 right-0 bg-red-600 text-white p-4 text-center z-50 shadow-md">
+            <p><strong>Error:</strong> <span id="error-message"></span></p>
+        </div>
+
+        <!-- Toast Container -->
+        <div id="toast-container"></div>
+
+        <!-- SIDEBAR MENU -->
+        <div id="sidebar-overlay" class="hidden fixed inset-0 bg-black/50 z-40"></div>
+        <div id="sidebar-menu"
+            class="fixed inset-y-0 left-0 w-64 bg-white shadow-2xl transform -translate-x-full z-50 flex flex-col h-full">
+            <div class="p-6 bg-gradient-to-r from-teal-600 to-teal-700 text-white">
+                <h2 class="text-2xl font-extrabold tracking-tight">Galaxy Fusion</h2>
+                <p class="text-teal-100 text-sm mt-1">Menu</p>
+            </div>
+            <nav class="flex-grow p-4 space-y-1 overflow-y-auto">
+                <button onclick="nav.to('dashboard'); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg> Home
+                </button>
+                <button onclick="nav.to('skill-groups'); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg> Skill Groups
+                </button>
+                <button onclick="nav.to('projects'); logic.loadProjects(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="m16 18 6-6-6-6" />
+                        <path d="m8 6-6 6 6 6" />
+                    </svg> Projects
+                </button>
+                <button onclick="nav.to('placements'); logic.loadJobsForStudent(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                        <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                    </svg> Placements
+                </button>
+                <button onclick="nav.to('materials'); logic.loadMaterials(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                        <polyline points="10 2 10 10 13 7 16 10 16 2" />
+                    </svg> Materials
+                </button>
+                <button onclick="nav.to('mentorship'); logic.loadMentors(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg> Find a Mentor
+                </button>
+                <button onclick="nav.to('clubs'); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10" />
+                        <path d="m12 8 4 4-4 4" />
+                        <path d="M8 12h8" />
+                    </svg> Join Clubs
+                </button>
+                <button onclick="nav.to('suggestions'); logic.loadSuggestions(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                        <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                    </svg> College Suggestions
+                </button>
+                <button onclick="nav.to('app-feedback'); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9" />
+                        <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                    </svg> App Feedback
+                </button>
+                <button onclick="ui.toggleModal('profile-modal'); logic.renderProfile(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-slate-700 hover:bg-slate-50 rounded-xl transition-colors font-medium text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg> Profile
+                </button>
+            </nav>
+            <div class="p-4 border-t border-gray-100">
+                <button onclick="auth.logout(); ui.closeSidebar()"
+                    class="w-full flex items-center gap-3 px-4 py-3 text-red-600 hover:bg-red-50 rounded-xl transition-colors font-bold text-left">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                        <polyline points="16 17 21 12 16 7" />
+                        <line x1="21" x2="9" y1="12" y2="12" />
+                    </svg> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Welcome Page -->
+        <div id="page-welcome"
+            class="page flex flex-col items-center justify-center text-center p-8 flex-grow bg-teal-800 text-white relative">
+            <div class="absolute top-[-10%] left-[-10%] w-64 h-64 bg-teal-500 opacity-20 rounded-full blur-3xl"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-80 h-80 bg-emerald-500 opacity-20 rounded-full blur-3xl">
+            </div>
+            <div
+                class="relative z-10 mb-8 bg-white/10 backdrop-blur-md p-6 rounded-3xl border border-white/20 shadow-xl">
+                <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="text-white">
+                    <path d="M22 10v6M2 10l10-5 10 5-10 5z" />
+                    <path d="M6 12v5c3 3 9 3 12 0v-5" />
+                </svg>
+            </div>
+            <h1 class="text-4xl font-extrabold mb-2">Galaxy Fusion</h1>
+            <p class="text-teal-100 mb-10">Learn. Connect. Grow.</p>
+            <div class="space-y-3 w-full max-w-xs relative z-10">
+                <button onclick="nav.to('login')"
+                    class="w-full py-3 bg-white text-teal-900 rounded-xl font-bold shadow-lg active:scale-95 transition-all">Login</button>
+                <button onclick="nav.to('signup')"
+                    class="w-full py-3 bg-teal-900/40 text-white border border-teal-400/30 rounded-xl font-bold active:scale-95 transition-all">Sign
+                    Up</button>
+                <button onclick="nav.to('mentor-login')"
+                    class="text-sm text-teal-200 hover:text-white mt-4 block w-full">Mentor Access</button>
+            </div>
+        </div>
+
+        <!-- Auth Pages -->
+        <div id="page-signup" class="page hidden flex-col p-6 bg-white h-full overflow-y-auto">
+            <div class="mb-8 pt-8">
+                <h2 class="text-3xl font-extrabold text-slate-800">Create Account</h2>
+                <p class="text-slate-500 mt-2">Join the student community</p>
+            </div>
+            <form onsubmit="auth.signup(event)" class="space-y-5">
+                <input type="text" name="name" class="modern-input" placeholder="Full Name" required>
+                <input type="text" name="roll" class="modern-input" placeholder="Roll Number (e.g. 21BCS001)" required>
+                <input type="password" name="pass" class="modern-input" placeholder="Password (Min. 6 chars)" required>
+                <p id="signup-error-message" class="text-rose-500 text-sm text-center font-medium"></p>
+                <div class="pt-4 space-y-4"><button type="submit"
+                        class="w-full py-4 bg-teal-700 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-transform">Create
+                        Account</button>
+                    <p class="text-center text-sm text-slate-500">Already have an account? <button type="button"
+                            onclick="nav.to('login')" class="font-bold text-teal-700">Sign In</button></p>
+                </div>
+            </form>
+        </div>
+
+        <div id="page-login" class="page hidden flex-col p-6 bg-white h-full overflow-y-auto">
+            <div class="mb-8 pt-8">
+                <h2 class="text-3xl font-extrabold text-slate-800">Welcome Back</h2>
+                <p class="text-slate-500 mt-2">Enter your details to login</p>
+            </div>
+            <form onsubmit="auth.login(event)" class="space-y-5">
+                <input type="text" name="roll" class="modern-input" placeholder="Roll Number" required>
+                <input type="password" name="pass" class="modern-input" placeholder="Password" required>
+                <p id="login-error-message" class="text-rose-500 text-sm text-center font-medium"></p>
+                <div class="pt-4 space-y-4"><button type="submit"
+                        class="w-full py-4 bg-teal-700 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-transform">Sign
+                        In</button>
+                    <p class="text-center text-sm text-slate-500">Don't have an account? <button type="button"
+                            onclick="nav.to('signup')" class="font-bold text-teal-700">Sign Up</button></p>
+                    <div class="text-center mt-4"><button type="button" onclick="nav.to('mentor-login')"
+                            class="text-xs text-slate-400 hover:text-teal-600">Go to Mentor Login</button></div>
+                </div>
+            </form>
+        </div>
+
+        <div id="page-mentor-login" class="page hidden flex-col p-6 bg-slate-50 h-full overflow-y-auto">
+            <div class="mb-8 pt-8"><span
+                    class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Mentor</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-4">Mentor Login</h2>
+            </div>
+            <form onsubmit="auth.mentorLogin(event)" class="space-y-5">
+                <input type="text" name="id" class="modern-input" placeholder="Username / ID" required>
+                <input type="password" name="pass" class="modern-input" placeholder="Password" required>
+                <p id="mentor-login-error-message" class="text-rose-500 text-sm text-center font-medium"></p>
+                <div class="pt-4 space-y-4"><button type="submit"
+                        class="w-full py-4 bg-indigo-700 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-transform">Login</button>
+                    <p class="text-center text-sm text-slate-500">New? <button type="button"
+                            onclick="nav.to('mentor-signup')" class="font-bold text-indigo-700">Register</button></p>
+                    <div class="text-center mt-4"><button type="button" onclick="nav.to('welcome')"
+                            class="text-xs text-slate-400">Back to Home</button></div>
+                </div>
+            </form>
+        </div>
+
+        <div id="page-mentor-signup" class="page hidden flex-col p-6 bg-slate-50 h-full overflow-y-auto">
+            <div class="mb-8 pt-8"><span
+                    class="bg-indigo-100 text-indigo-700 text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wide">Mentor</span>
+                <h2 class="text-3xl font-extrabold text-slate-800 mt-4">Register</h2>
+            </div>
+            <form onsubmit="auth.mentorSignup(event)" class="space-y-5">
+                <input type="text" name="name" class="modern-input" placeholder="Full Name" required>
+                <input type="text" name="id" class="modern-input" placeholder="Username / ID" required>
+                <select name="type" class="modern-input bg-white">
+                    <option value="Faculty">Faculty</option>
+                    <option value="Alumni">Alumni</option>
+                    <option value="Expert">Expert</option>
+                </select>
+                <input type="text" name="exp" class="modern-input" placeholder="Area of Expertise" required>
+                <input type="password" name="pass" class="modern-input" placeholder="Password" required>
+                <p id="mentor-signup-error-message" class="text-rose-500 text-sm text-center font-medium"></p>
+                <div class="pt-4 space-y-4"><button type="submit"
+                        class="w-full py-4 bg-indigo-700 text-white rounded-2xl font-bold shadow-lg active:scale-95 transition-transform">Register</button>
+                    <p class="text-center text-sm text-slate-500">Already registered? <button type="button"
+                            onclick="nav.to('mentor-login')" class="font-bold text-indigo-700">Login</button></p>
+                </div>
+            </form>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="page-dashboard" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <!-- Header -->
+            <div class="bg-[#0f766e] text-white p-5 pb-8 rounded-b-[2rem] shadow-lg relative z-10">
+                <div class="flex justify-between items-center mb-4">
+                    <button onclick="ui.toggleSidebar()" class="p-1 transition-transform active:scale-90">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="3" x2="21" y1="6" y2="6" />
+                            <line x1="3" x2="21" y1="12" y2="12" />
+                            <line x1="3" x2="21" y1="18" y2="18" />
+                        </svg>
+                    </button>
+                    <div class="text-lg font-medium">Hi <span id="user-name-display" class="font-bold">Student</span>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <!-- Notification Bell -->
+                        <button onclick="ui.toggleModal('notifications-modal'); logic.loadNotifications()"
+                            class="relative p-1 transition-transform active:scale-90">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+                                <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+                            </svg>
+                            <span id="notif-dot"
+                                class="hidden absolute top-0 right-0 h-2.5 w-2.5 bg-red-500 rounded-full border-2 border-[#0f766e]"></span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Grid Content -->
+            <main class="flex-grow overflow-y-auto no-scrollbar -mt-4 px-4 pb-24 pt-2">
+                <div class="grid grid-cols-2 gap-4">
+
+                    <!-- Skill Groups (Orange) -->
+                    <div onclick="nav.to('skill-groups')"
+                        class="dashboard-card bg-gradient-to-br from-orange-400 to-orange-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Skill<br>Groups</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                                <circle cx="9" cy="7" r="4" />
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Placements (Blue/Cyan) -->
+                    <div onclick="nav.to('placements'); logic.loadJobsForStudent()"
+                        class="dashboard-card bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Campus<br>Placement</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width="20" height="14" x="2" y="7" rx="2" ry="2" />
+                                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Mentorship (Yellow) -->
+                    <div onclick="nav.to('mentorship'); logic.loadMentors()"
+                        class="dashboard-card bg-gradient-to-br from-yellow-400 to-yellow-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Find<br>Mentor</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                            </svg></div>
+                    </div>
+
+                    <!-- College Suggestions (Green - RENAMED) -->
+                    <div onclick="nav.to('suggestions'); logic.loadSuggestions()"
+                        class="dashboard-card bg-gradient-to-br from-emerald-500 to-emerald-700 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">College<br>Suggestions</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path
+                                    d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" />
+                                <path d="M9 18h6" />
+                                <path d="M10 22h4" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Projects (Blue-Indigo) - NEW -->
+                    <div onclick="nav.to('projects'); logic.loadProjects()"
+                        class="dashboard-card bg-gradient-to-br from-blue-500 to-indigo-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Projects</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m16 18 6-6-6-6" />
+                                <path d="m8 6-6 6 6 6" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Study Materials (Pink) -->
+                    <div onclick="nav.to('materials'); logic.loadMaterials()"
+                        class="dashboard-card bg-gradient-to-br from-pink-500 to-rose-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Study<br>Materials</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                                <polyline points="10 2 10 10 13 7 16 10 16 2" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Clubs (Teal) -->
+                    <div onclick="nav.to('clubs')"
+                        class="dashboard-card bg-gradient-to-br from-teal-400 to-teal-600 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">Join<br>Clubs</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <path d="m12 8 4 4-4 4" />
+                                <path d="M8 12h8" />
+                            </svg></div>
+                    </div>
+
+                    <!-- App Feedback (Purple - NEW) -->
+                    <div onclick="nav.to('app-feedback')"
+                        class="dashboard-card bg-gradient-to-br from-violet-500 to-violet-700 rounded-2xl p-4 h-32 flex flex-col justify-between shadow-lg text-white relative overflow-hidden">
+                        <h3 class="font-bold text-lg leading-tight z-10">App<br>Feedback</h3>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <path d="M12 20h9" />
+                                <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z" />
+                            </svg></div>
+                    </div>
+
+                    <!-- Post Jobs (Faculty Only) -->
+                    <div id="faculty-post-job-card" onclick="nav.to('post-jobs'); logic.loadJobsForFaculty()"
+                        class="hidden dashboard-card bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl p-4 h-32 flex-col justify-between shadow-lg text-white relative overflow-hidden col-span-2">
+                        <h3 class="font-bold text-lg leading-tight z-10">Post<br>Jobs</h3>
+                        <p class="text-xs text-white/80 z-10">Add Placement & Internships</p>
+                        <div class="absolute -right-4 -bottom-4 text-white opacity-20"><svg
+                                xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2">
+                                <rect width="20" height="14" x="2" y="3" rx="2" />
+                                <line x1="8" x2="16" y1="21" y2="21" />
+                                <line x1="12" x2="12" y1="17" y2="21" />
+                            </svg></div>
+                    </div>
+                </div>
+            </main>
+
+            <!-- Bottom Nav -->
+            <div
+                class="fixed bottom-0 w-full max-w-md bg-white border-t border-gray-200 flex justify-around items-center py-3 z-40">
+                <button id="nav-home" onclick="nav.to('dashboard')"
+                    class="nav-item active flex flex-col items-center"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="currentColor" class="opacity-20 absolute"
+                        stroke="none">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                    </svg><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                        <polyline points="9 22 9 12 15 12 15 22" />
+                    </svg><span class="text-[10px] mt-1">Home</span></button>
+                <button id="nav-groups" onclick="nav.to('skill-groups')"
+                    class="nav-item flex flex-col items-center text-gray-400"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                        <circle cx="9" cy="7" r="4" />
+                        <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                        <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                    </svg><span class="text-[10px] mt-1">Groups</span></button>
+                <button id="nav-mentors" onclick="nav.to('mentorship'); logic.loadMentors()"
+                    class="nav-item flex flex-col items-center text-gray-400"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1 0-5H20" />
+                    </svg><span class="text-[10px] mt-1">Mentors</span></button>
+                <button id="profile-button-nav" onclick="ui.toggleModal('profile-modal'); logic.renderProfile()"
+                    class="nav-item flex flex-col items-center text-gray-400"><svg xmlns="http://www.w3.org/2000/svg"
+                        width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" />
+                        <circle cx="12" cy="7" r="4" />
+                    </svg><span class="text-[10px] mt-1">Profile</span></button>
+            </div>
+        </div>
+
+        <!-- SUB PAGES (Hidden by default) -->
+
+        <!-- Projects Page (NEW) -->
+        <div id="page-projects" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold text-lg">My Projects</h1>
+            </div>
+            <main class="p-4 pb-24 overflow-y-auto space-y-6">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold text-slate-800 mb-2">Submit Project</h2>
+                    <form onsubmit="logic.submitProject(event)" class="space-y-4">
+                        <input type="text" name="title" class="modern-input" placeholder="Project Title" required>
+                        <textarea name="desc" class="modern-input h-24" placeholder="Short Description"
+                            required></textarea>
+                        <input type="url" name="github" class="modern-input" placeholder="GitHub Repository Link"
+                            required>
+                        <button type="submit"
+                            class="w-full py-2 bg-indigo-600 text-white rounded-xl font-bold shadow-md">Add to
+                            Portfolio</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-3 px-1">Submitted Projects</h2>
+                    <div id="projects-list" class="space-y-3">
+                        <p class="text-center text-slate-400 text-sm">No projects submitted yet.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Materials Page -->
+        <div id="page-materials" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold text-lg">Study Materials</h1>
+            </div>
+            <main class="p-4 pb-24 overflow-y-auto space-y-6">
+                <!-- Mentor Upload Section (Visible to Mentors Only) -->
+                <div id="mentor-upload-section"
+                    class="hidden bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-lg font-bold text-slate-800 mb-2">Upload Material</h2>
+                    <form onsubmit="logic.addMaterial(event)" class="space-y-4">
+                        <input type="text" name="title" class="modern-input" placeholder="Title (e.g. Java Notes)"
+                            required>
+                        <select name="type" class="modern-input bg-white">
+                            <option value="pdf">PDF Document</option>
+                            <option value="link">External Link</option>
+                            <option value="video">Video Link</option>
+                            <option value="image">Image</option>
+                        </select>
+                        <input type="text" name="link" id="material-link-input" class="modern-input"
+                            placeholder="Paste Link (URL)">
+                        <div class="text-xs text-slate-500">OR Upload File (PDF/Image)</div>
+                        <input type="file" name="file" id="material-file-input" class="text-sm w-full">
+                        <textarea name="desc" class="modern-input h-20" placeholder="Description..."></textarea>
+                        <button type="submit"
+                            class="w-full py-2 bg-pink-600 text-white rounded-xl font-bold shadow-md">Upload</button>
+                    </form>
+                </div>
+
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-3 px-1">Available Materials</h2>
+                    <div id="materials-list" class="space-y-3">
+                        <p class="text-center text-slate-400 text-sm">No materials uploaded yet.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Placements Page -->
+        <div id="page-placements" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold text-lg">Campus Placement</h1>
+            </div>
+            <main class="p-4 pb-24 overflow-y-auto space-y-6">
+                <div class="flex gap-2 overflow-x-auto no-scrollbar mb-2">
+                    <span
+                        class="px-4 py-2 bg-cyan-600 text-white rounded-full text-sm font-bold whitespace-nowrap">All</span>
+                    <span
+                        class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm font-bold whitespace-nowrap">Super
+                        Dream</span>
+                    <span
+                        class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm font-bold whitespace-nowrap">Dream</span>
+                    <span
+                        class="px-4 py-2 bg-white text-gray-600 border rounded-full text-sm font-bold whitespace-nowrap">Core</span>
+                </div>
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <h2 class="text-xl font-bold text-slate-800 mb-1">Profile Registration</h2>
+                    <p class="text-sm text-slate-500 mb-4">Keep your academic profile updated.</p>
+                    <form id="placement-form" onsubmit="logic.submitPlacement(event)" class="space-y-4">
+                        <div class="grid grid-cols-2 gap-4">
+                            <select name="year" class="modern-input bg-white" required>
+                                <option value="" disabled selected>Year</option>
+                                <option value="1">1st</option>
+                                <option value="2">2nd</option>
+                                <option value="3">3rd</option>
+                                <option value="4">4th</option>
+                            </select>
+                            <input type="text" name="branch" class="modern-input" placeholder="Branch" required>
+                        </div>
+                        <input type="email" name="email" class="modern-input" placeholder="College Email" required>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-500 mb-2 ml-1 uppercase">Semester
+                                CGPA</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <input type="text" name="cgpa1" class="modern-input text-center px-1"
+                                    placeholder="1"><input type="text" name="cgpa2"
+                                    class="modern-input text-center px-1" placeholder="2"><input type="text"
+                                    name="cgpa3" class="modern-input text-center px-1" placeholder="3"><input
+                                    type="text" name="cgpa4" class="modern-input text-center px-1" placeholder="4">
+                                <input type="text" name="cgpa5" class="modern-input text-center px-1"
+                                    placeholder="5"><input type="text" name="cgpa6"
+                                    class="modern-input text-center px-1" placeholder="6"><input type="text"
+                                    name="cgpa7" class="modern-input text-center px-1" placeholder="7"><input
+                                    type="text" name="cgpa8" class="modern-input text-center px-1" placeholder="8">
+                            </div>
+                        </div>
+                        <button type="submit"
+                            class="w-full py-3 bg-cyan-600 text-white rounded-xl font-bold shadow-lg mt-2">Register</button>
+                    </form>
+                </div>
+                <div>
+                    <h2 class="text-lg font-bold text-slate-800 mb-3 px-1">Current Openings</h2>
+                    <div id="student-job-list" class="space-y-3">
+                        <p class="text-center text-slate-400 text-sm">No job openings yet.</p>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Post Jobs Page -->
+        <div id="page-post-jobs" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold text-lg">Post a Job</h1>
+            </div>
+            <main class="p-4 pb-24 overflow-y-auto space-y-6">
+                <form onsubmit="logic.postJob(event)"
+                    class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 space-y-4">
+                    <input type="text" name="company" class="modern-input" placeholder="Company Name" required>
+                    <input type="text" name="role" class="modern-input" placeholder="Job Role" required>
+                    <input type="text" name="salary" class="modern-input" placeholder="Package (e.g. 10 LPA)" required>
+                    <textarea name="eligibility" class="modern-input h-24" placeholder="Eligibility Criteria & Details"
+                        required></textarea>
+                    <button type="submit"
+                        class="w-full py-3 bg-purple-600 text-white rounded-xl font-bold shadow-lg">Post
+                        Opening</button>
+                </form>
+                <div>
+                    <h3 class="font-bold text-slate-700 mb-2 px-1">Posted Jobs</h3>
+                    <div id="faculty-job-list" class="space-y-3"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- Skill Groups -->
+        <div id="page-skill-groups" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center justify-between sticky top-0 z-10">
+                <button onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="font-bold text-lg">Skill Groups</h1>
+            </div>
+            <main class="p-4 space-y-4 overflow-y-auto pb-24">
+                <div onclick="nav.to('make-group')"
+                    class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer">
+                    <div class="bg-teal-100 p-3 rounded-full text-teal-600"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <line x1="12" x2="12" y1="8" y2="16" />
+                            <line x1="8" x2="16" y1="12" y2="12" />
+                        </svg></div>
+                    <h2 class="font-bold">Make a Group</h2>
+                </div>
+                <div onclick="nav.to('join-group'); logic.loadGroups()"
+                    class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer">
+                    <div class="bg-blue-100 p-3 rounded-full text-blue-600"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <circle cx="11" cy="11" r="8" />
+                            <line x1="21" x2="16.65" y1="21" y2="16.65" />
+                        </svg></div>
+                    <h2 class="font-bold">Join a Group</h2>
+                </div>
+                <div onclick="nav.to('manage-groups'); logic.loadMyGroups()"
+                    class="bg-white p-5 rounded-xl shadow-sm border border-gray-100 flex items-center gap-4 cursor-pointer">
+                    <div class="bg-purple-100 p-3 rounded-full text-purple-600"><svg xmlns="http://www.w3.org/2000/svg"
+                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M10 17l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z" />
+                            <path d="M3 12h.01" />
+                            <path d="M3 17h.01" />
+                            <path d="M3 7h.01" />
+                            <path d="M7 12h14" />
+                            <path d="M7 17h14" />
+                            <path d="M7 7h14" />
+                        </svg></div>
+                    <h2 class="font-bold">Manage My Groups</h2>
+                </div>
+            </main>
+        </div>
+
+        <div id="page-make-group" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('skill-groups')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">Create Group</h1>
+            </div>
+            <main class="p-6">
+                <form onsubmit="logic.createGroup(event)" class="space-y-4 bg-white p-6 rounded-2xl shadow-sm">
+                    <input id="mk-skill" class="modern-input" placeholder="Skill (e.g. React)" required>
+                    <input id="mk-branch" class="modern-input" placeholder="Branch" required>
+                    <div class="flex justify-between gap-2">
+                        <label class="flex-1 text-center border rounded-lg p-2 cursor-pointer bg-gray-50"><input
+                                type="radio" name="year" value="1st" required> 1st</label>
+                        <label class="flex-1 text-center border rounded-lg p-2 cursor-pointer bg-gray-50"><input
+                                type="radio" name="year" value="2nd"> 2nd</label>
+                        <label class="flex-1 text-center border rounded-lg p-2 cursor-pointer bg-gray-50"><input
+                                type="radio" name="year" value="3rd"> 3rd</label>
+                        <label class="flex-1 text-center border rounded-lg p-2 cursor-pointer bg-gray-50"><input
+                                type="radio" name="year" value="4th"> 4th</label>
+                    </div>
+                    <button type="submit"
+                        class="w-full py-3 bg-teal-600 text-white rounded-xl font-bold">Create</button>
+                </form>
+            </main>
+        </div>
+
+        <div id="page-join-group" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('skill-groups')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">Join Group</h1>
+            </div>
+            <main id="join-list" class="p-4 space-y-3 overflow-y-auto pb-24"></main>
+        </div>
+
+        <div id="page-manage-groups" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('skill-groups')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">My Groups</h1>
+            </div>
+            <main id="my-groups-list" class="p-4 space-y-3 overflow-y-auto pb-24"></main>
+        </div>
+
+        <div id="page-requests" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('manage-groups')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">Requests</h1>
+            </div>
+            <main id="requests-list" class="p-4 space-y-3 overflow-y-auto pb-24"></main>
+        </div>
+
+        <div id="page-suggestions" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">College Suggestions</h1>
+            </div>
+            <main class="p-4 flex-grow pb-24">
+                <div class="bg-white p-4 rounded-2xl shadow-sm mb-6">
+                    <textarea id="sug-text" class="modern-input h-24 mb-2"
+                        placeholder="Your anonymous suggestion..."></textarea>
+                    <div class="flex gap-2">
+                        <button onclick="logic.addSuggestion()"
+                            class="flex-1 py-2 bg-teal-600 text-white rounded-lg text-sm font-bold">Submit</button>
+                    </div>
+                </div>
+                <h3 class="font-bold mb-2 text-slate-700">Recent</h3>
+                <div id="sug-list" class="space-y-3"></div>
+            </main>
+        </div>
+
+        <!-- App Feedback Page -->
+        <div id="page-app-feedback" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">App Feedback</h1>
+            </div>
+            <main class="p-4 flex-grow pb-24">
+                <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 text-center">
+                    <h2 class="text-lg font-bold text-slate-800 mb-2">Rate Your Experience</h2>
+                    <p class="text-sm text-slate-500 mb-4">Help us improve Galaxy Fusion.</p>
+                    <div class="star-rating flex justify-center flex-row-reverse mb-6 gap-2">
+                        <input type="radio" id="star5" name="rating" value="5"><label for="star5"></label>
+                        <input type="radio" id="star4" name="rating" value="4"><label for="star4"></label>
+                        <input type="radio" id="star3" name="rating" value="3"><label for="star3"></label>
+                        <input type="radio" id="star2" name="rating" value="2"><label for="star2"></label>
+                        <input type="radio" id="star1" name="rating" value="1"><label for="star1"></label>
+                    </div>
+                    <textarea id="feedback-text" class="modern-input h-32 mb-4"
+                        placeholder="Tell us what you think..."></textarea>
+                    <button onclick="logic.submitAppFeedback()"
+                        class="w-full py-3 bg-violet-600 text-white rounded-xl font-bold shadow-lg">Send
+                        Feedback</button>
+                </div>
+            </main>
+        </div>
+
+        <!-- Mentors -->
+        <div id="page-mentorship" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">Mentors</h1>
+            </div>
+            <main id="mentor-list" class="p-4 space-y-3 overflow-y-auto pb-24"></main>
+        </div>
+
+        <!-- Clubs -->
+        <div id="page-clubs" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="bg-white p-4 shadow-sm flex items-center sticky top-0 z-10"><button
+                    onclick="nav.to('dashboard')" class="p-2 bg-gray-100 rounded-full"><svg
+                        xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2">
+                        <path d="m12 19-7-7 7-7" />
+                        <path d="M19 12H5" />
+                    </svg></button>
+                <h1 class="ml-4 font-bold">Clubs</h1>
+            </div>
+            <main class="p-4 space-y-4">
+                <!-- Club Categories -->
+                <div id="club-categories" class="space-y-4">
+                    <div onclick="logic.showClubSubCategory('technical')"
+                        class="dashboard-card bg-gradient-to-r from-red-500 to-red-600 p-6 rounded-2xl text-white flex items-center justify-between shadow-lg cursor-pointer">
+                        <div>
+                            <h3 class="font-bold text-xl">Technical Club</h3>
+                            <p class="text-sm opacity-90">Coding, AI & Robotics</p>
+                        </div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </div>
+                    <div onclick="logic.showClubSubCategory('sports')"
+                        class="dashboard-card bg-gradient-to-r from-indigo-500 to-indigo-600 p-6 rounded-2xl text-white flex items-center justify-between shadow-lg cursor-pointer">
+                        <div>
+                            <h3 class="font-bold text-xl">Sports Club</h3>
+                            <p class="text-sm opacity-90">Football, Cricket & More</p>
+                        </div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </div>
+                    <div onclick="logic.showClubSubCategory('cultural')"
+                        class="dashboard-card bg-gradient-to-r from-pink-500 to-rose-600 p-6 rounded-2xl text-white flex items-center justify-between shadow-lg cursor-pointer">
+                        <div>
+                            <h3 class="font-bold text-xl">Cultural Club</h3>
+                            <p class="text-sm opacity-90">Dance, Music & Drama</p>
+                        </div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="m9 18 6-6-6-6" />
+                        </svg>
+                    </div>
+                </div>
+
+                <!-- Sub-Club List (Hidden by default) -->
+                <div id="sub-club-list-container" class="hidden">
+                    <div class="flex items-center mb-4">
+                        <button onclick="logic.hideClubSubCategory()" class="text-slate-500 mr-2 font-bold">&larr;
+                            Back</button>
+                        <h2 id="sub-club-title" class="font-bold text-lg text-slate-800">Category</h2>
+                    </div>
+                    <div id="sub-club-items" class="space-y-3"></div>
+                </div>
+            </main>
+        </div>
+
+        <!-- ==================== MODALS ==================== -->
+
+        <!-- Notifications Modal -->
+        <div id="notifications-modal"
+            class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="modal-content bg-white w-full max-w-sm rounded-2xl p-5 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">Notifications</h3><button
+                        onclick="ui.toggleModal('notifications-modal')" class="text-gray-400 text-xl">&times;</button>
+                </div>
+                <div class="space-y-3 max-h-[60vh] overflow-y-auto no-scrollbar" id="notifications-list">
+                    <!-- Static example notifications -->
+                    <div class="p-3 bg-indigo-50 rounded-xl border-l-4 border-indigo-500 text-sm">
+                        <p class="font-bold text-indigo-800">Mentor Q&A</p><span class="text-xs text-slate-500">New
+                            message.</span>
+                    </div>
+                    <div class="p-3 bg-orange-50 rounded-xl border-l-4 border-orange-500 text-sm">
+                        <p class="font-bold text-orange-800">College Event</p><span class="text-xs text-slate-500">Tech
+                            Fest Registration Open.</span>
+                    </div>
+                    <div class="p-3 bg-teal-50 rounded-xl border-l-4 border-teal-500 text-sm">
+                        <p class="font-bold text-teal-800">App Update</p><span class="text-xs text-slate-500">New
+                            Placement Section added!</span>
+                    </div>
+                    <!-- Dynamic notifications will be appended here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- Placement Success Modal -->
+        <div id="placement-modal"
+            class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="modal-content bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl text-center">
+                <div
+                    class="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="3">
+                        <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                </div>
+                <h3 class="font-bold text-xl text-slate-800 mb-2">Success!</h3>
+                <p class="text-slate-500 mb-6">You get updates on your email.</p>
+                <button onclick="ui.toggleModal('placement-modal'); nav.to('dashboard')"
+                    class="w-full py-3 bg-green-600 text-white rounded-xl font-bold shadow-lg">Done</button>
+            </div>
+        </div>
+
+        <!-- Message Modal -->
+        <div id="message-modal"
+            class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="modal-content bg-white w-full max-w-sm rounded-2xl p-6 shadow-2xl">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-lg">Send Message</h3><button onclick="ui.toggleModal('message-modal')"
+                        class="text-gray-400 text-xl">&times;</button>
+                </div>
+                <textarea id="msg-input" class="modern-input h-32 mb-4"
+                    placeholder="Type your message to the mentor..."></textarea>
+                <button onclick="logic.sendMessage()"
+                    class="w-full py-3 bg-indigo-600 text-white rounded-xl font-bold shadow-lg">Send</button>
+            </div>
+        </div>
+
+        <!-- Profile Modal -->
+        <div id="profile-modal"
+            class="hidden fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4 backdrop-blur-sm">
+            <div class="bg-white w-full max-w-md rounded-3xl shadow-2xl overflow-hidden h-[80vh] flex flex-col">
+                <div class="p-4 border-b flex justify-between items-center">
+                    <h3 class="font-bold text-lg">Profile</h3><button onclick="ui.toggleModal('profile-modal')"
+                        class="text-gray-400 text-2xl">&times;</button>
+                </div>
+                <div class="p-6 overflow-y-auto no-scrollbar space-y-6">
+                    <!-- Img -->
+                    <div class="flex flex-col items-center">
+                        <img id="prof-img" src=""
+                            class="w-24 h-24 rounded-full object-cover border-4 border-white shadow-lg bg-gray-200">
+                        <button onclick="document.getElementById('prof-img-input').click()"
+                            class="text-blue-600 text-sm mt-2 font-medium">Change Photo</button>
+                        <input type="file" id="prof-img-input" class="hidden" accept="image/*"
+                            onchange="logic.uploadImage(this)">
+                    </div>
+                    <!-- Info -->
+                    <div class="bg-gray-50 p-4 rounded-xl border border-gray-100 text-center">
+                        <h2 id="prof-name" class="font-bold text-lg"></h2>
+                        <p id="prof-roll" class="text-gray-500 text-sm"></p>
+                    </div>
+                    <!-- Resume -->
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2">Resume</h4>
+                        <div class="bg-indigo-50 p-3 rounded-xl flex justify-between items-center">
+                            <div class="flex-grow mr-2 overflow-hidden">
+                                <span id="prof-resume-text" class="text-sm text-indigo-800 truncate block">No
+                                    resume.</span>
+                            </div>
+                            <div class="flex gap-2 shrink-0">
+                                <button onclick="document.getElementById('prof-resume-upload').click()"
+                                    class="text-xs bg-white text-indigo-600 border border-indigo-200 px-2 py-1 rounded-lg font-bold">Upload</button>
+                                <button id="prof-view-resume"
+                                    class="hidden text-xs bg-indigo-600 text-white px-3 py-1 rounded-lg font-bold"
+                                    onclick="logic.viewResume()">View</button>
+                            </div>
+                            <input type="file" id="prof-resume-upload" class="hidden" accept=".pdf"
+                                onchange="logic.uploadResume(this)">
+                        </div>
+                    </div>
+                    <!-- Skills -->
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2">Skills</h4>
+                        <form onsubmit="logic.addSkill(event)" class="flex gap-2 mb-2"><input name="skill"
+                                class="modern-input py-2 text-sm" placeholder="Add..."><button
+                                class="bg-slate-800 text-white px-3 rounded-lg text-sm">Add</button></form>
+                        <div id="prof-skills" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <!-- Certs -->
+                    <div>
+                        <h4 class="font-bold text-gray-800 mb-2">Certifications</h4>
+                        <form onsubmit="logic.addCert(event)" class="space-y-2 mb-2 p-3 bg-gray-50 rounded-xl">
+                            <input name="name" class="modern-input py-1 text-sm" placeholder="Name">
+                            <input name="org" class="modern-input py-1 text-sm" placeholder="Org">
+                            <input type="file" name="pdf" class="text-xs w-full" accept=".pdf">
+                            <button class="w-full bg-slate-800 text-white py-1 rounded-lg text-sm">Add</button>
+                        </form>
+                        <div id="prof-certs" class="space-y-2"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- GROUP CHAT PAGE -->
+        <div id="page-group-chat" class="page hidden w-full bg-gray-50 h-full flex-col">
+            <div class="chat-header">
+                <button class="chat-header-back" onclick="nav.to('manage-groups'); logic.loadMyGroups()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg>
+                </button>
+                <div class="chat-header-info">
+                    <div class="chat-header-title" id="chat-group-name">Group</div>
+                    <div class="chat-header-subtitle" id="chat-group-subtitle"></div>
+                </div>
+            </div>
+            <div class="chat-messages no-scrollbar" id="chat-messages-area">
+                <div class="chat-empty-state">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    <p>No messages yet.<br>Be the first to say hello!</p>
+                </div>
+            </div>
+            <form onsubmit="logic.sendGroupMessage(event)" class="chat-input-bar">
+                <input type="text" id="chat-message-input" class="chat-input-field" placeholder="Type a message..." autocomplete="off" required>
+                <button type="submit" class="chat-send-btn">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+                </button>
+            </form>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+    <script src="main.js"></script>
+</body>
+
+</html>
