@@ -4,7 +4,7 @@ const SUPABASE_URL = 'https://pfsklgdqabozkglltqax.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmc2tsZ2RxYWJvemtnbGx0cWF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUyNjU5NzAsImV4cCI6MjA5MDg0MTk3MH0.iEDVq_sjN3rC2w_Ywu4YYOmAFyn5tnT8URrNgkASOao';
 const EMAIL_DOMAIN = '@galaxy.local';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // --- STATE ---
 let currentUser = null;   // { id, name, roll, role, ... } from profiles
@@ -106,9 +106,9 @@ window.nav = {
 window.auth = {
     check: async () => {
         ui.showLoading(true);
-        const { data: { session } } = await supabase.auth.getSession();
+        const { data: { session } } = await sb.auth.getSession();
         if (session) {
-            const { data: profile } = await supabase.from('profiles').select('*').eq('id', session.user.id).single();
+            const { data: profile } = await sb.from('profiles').select('*').eq('id', session.user.id).single();
             if (profile) {
                 currentUser = profile;
                 window.nav.to('dashboard');
@@ -140,7 +140,7 @@ window.auth = {
         const name = d.get('name'), roll = d.get('roll'), pass = d.get('pass');
         if (pass.length < 6) return ui.toast('Password must be at least 6 characters!', 'error');
         ui.showLoading(true);
-        const { error } = await supabase.auth.signUp({
+        const { error } = await sb.auth.signUp({
             email: rollToEmail(roll),
             password: pass,
             options: { data: { name, roll, role: 'student' } }
@@ -156,7 +156,7 @@ window.auth = {
         e.preventDefault();
         const d = new FormData(e.target);
         ui.showLoading(true);
-        const { error } = await supabase.auth.signInWithPassword({
+        const { error } = await sb.auth.signInWithPassword({
             email: rollToEmail(d.get('roll')),
             password: d.get('pass')
         });
@@ -171,7 +171,7 @@ window.auth = {
         const d = new FormData(e.target);
         const name = d.get('name'), roll = d.get('id'), pass = d.get('pass');
         ui.showLoading(true);
-        const { error } = await supabase.auth.signUp({
+        const { error } = await sb.auth.signUp({
             email: rollToEmail(roll),
             password: pass,
             options: { data: { name, roll, role: 'mentor', mentor_type: d.get('type'), expertise: d.get('exp') } }
@@ -187,15 +187,15 @@ window.auth = {
         e.preventDefault();
         const d = new FormData(e.target);
         ui.showLoading(true);
-        const { data, error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await sb.auth.signInWithPassword({
             email: rollToEmail(d.get('id')),
             password: d.get('pass')
         });
         if (error) { ui.showLoading(false); return ui.toast('Invalid Mentor Login!', 'error'); }
         // verify mentor role
-        const { data: profile } = await supabase.from('profiles').select('role').eq('id', data.user.id).single();
+        const { data: profile } = await sb.from('profiles').select('role').eq('id', data.user.id).single();
         if (!profile || profile.role !== 'mentor') {
-            await supabase.auth.signOut();
+            await sb.auth.signOut();
             ui.showLoading(false);
             return ui.toast('This account is not a mentor!', 'error');
         }
@@ -205,8 +205,8 @@ window.auth = {
     },
 
     logout: async () => {
-        if (chatSubscription) { supabase.removeChannel(chatSubscription); chatSubscription = null; }
-        await supabase.auth.signOut();
+        if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
+        await sb.auth.signOut();
         currentUser = null;
         window.auth.check();
     }
@@ -229,10 +229,10 @@ window.logic = {
         const year = document.querySelector('input[name="year"]:checked')?.value;
         if (!year) return ui.toast('Select a year!', 'error');
 
-        const { data: group, error } = await supabase.from('groups').insert({ skill, branch, year, creator_id: currentUser.id }).select().single();
+        const { data: group, error } = await sb.from('groups').insert({ skill, branch, year, creator_id: currentUser.id }).select().single();
         if (error) return ui.toast('Error creating group', 'error');
         // add creator as member
-        await supabase.from('group_members').insert({ group_id: group.id, user_id: currentUser.id });
+        await sb.from('group_members').insert({ group_id: group.id, user_id: currentUser.id });
         e.target.reset();
         ui.toast('Group created!', 'success');
         window.nav.to('skill-groups');
@@ -244,7 +244,7 @@ window.logic = {
         if (!list) return;
         list.innerHTML = '<p class="text-center text-gray-400 py-4">Loading...</p>';
 
-        const { data: groups } = await supabase.from('groups').select('*, group_members(user_id)');
+        const { data: groups } = await sb.from('groups').select('*, group_members(user_id)');
         list.innerHTML = '';
         if (!groups || groups.length === 0) { list.innerHTML = '<p class="text-center text-gray-400">No groups yet.</p>'; return; }
 
@@ -263,7 +263,7 @@ window.logic = {
 
     requestJoin: async (gid) => {
         if (!currentUser) return;
-        const { error } = await supabase.from('group_join_requests').insert({
+        const { error } = await sb.from('group_join_requests').insert({
             group_id: gid, user_id: currentUser.id, name: currentUser.name, roll: currentUser.roll
         });
         if (error) return ui.toast('Already requested or joined!', 'error');
@@ -277,7 +277,7 @@ window.logic = {
         if (!list) return;
         list.innerHTML = '<p class="text-center text-gray-400 py-4">Loading...</p>';
 
-        const { data: memberships } = await supabase.from('group_members').select('group_id, groups(*)').eq('user_id', currentUser.id);
+        const { data: memberships } = await sb.from('group_members').select('group_id, groups(*)').eq('user_id', currentUser.id);
         list.innerHTML = '';
         if (!memberships || memberships.length === 0) { list.innerHTML = '<p class="text-center text-gray-400 py-8">You haven\'t joined any groups yet.</p>'; return; }
 
@@ -286,7 +286,7 @@ window.logic = {
         for (let i = 0; i < memberships.length; i++) {
             const g = memberships[i].groups;
             if (!g) continue;
-            const { data: lastMsgArr } = await supabase.from('group_messages').select('sender_name,text').eq('group_id', g.id).order('created_at', { ascending: false }).limit(1);
+            const { data: lastMsgArr } = await sb.from('group_messages').select('sender_name,text').eq('group_id', g.id).order('created_at', { ascending: false }).limit(1);
             const lastMsg = lastMsgArr?.[0];
             const preview = lastMsg ? `${lastMsg.sender_name}: ${lastMsg.text}` : 'No messages yet. Tap to chat!';
             const isCreator = g.creator_id === currentUser.id;
@@ -312,7 +312,7 @@ window.logic = {
 
     openGroupChat: async (groupId) => {
         currentChatGroupId = groupId;
-        const { data: group } = await supabase.from('groups').select('*, group_members(user_id)').eq('id', groupId).single();
+        const { data: group } = await sb.from('groups').select('*, group_members(user_id)').eq('id', groupId).single();
         if (!group) return;
 
         const headerTitle = document.getElementById('chat-group-name');
@@ -329,8 +329,8 @@ window.logic = {
     },
 
     subscribeToChat: (groupId) => {
-        if (chatSubscription) { supabase.removeChannel(chatSubscription); chatSubscription = null; }
-        chatSubscription = supabase
+        if (chatSubscription) { sb.removeChannel(chatSubscription); chatSubscription = null; }
+        chatSubscription = sb
             .channel('group-chat-' + groupId)
             .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'group_messages', filter: `group_id=eq.${groupId}` },
                 (payload) => {
@@ -359,7 +359,7 @@ window.logic = {
         const container = document.getElementById('chat-messages-area');
         if (!container || !currentChatGroupId) return;
 
-        const { data: msgs } = await supabase.from('group_messages').select('*').eq('group_id', currentChatGroupId).order('created_at', { ascending: true });
+        const { data: msgs } = await sb.from('group_messages').select('*').eq('group_id', currentChatGroupId).order('created_at', { ascending: true });
 
         if (!msgs || msgs.length === 0) {
             container.innerHTML = `<div class="chat-empty-state"><svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><p>No messages yet.<br>Be the first to say hello!</p></div>`;
@@ -394,7 +394,7 @@ window.logic = {
         if (!text || !currentChatGroupId || !currentUser) return;
 
         // Insert into DB — realtime subscription will render it
-        const { error } = await supabase.from('group_messages').insert({
+        const { error } = await sb.from('group_messages').insert({
             group_id: currentChatGroupId,
             sender_id: currentUser.id,
             sender_name: currentUser.name,
@@ -411,7 +411,7 @@ window.logic = {
         if (!list) return;
         list.innerHTML = '<p class="text-center text-gray-400 py-4">Loading...</p>';
 
-        const { data: reqs } = await supabase.from('group_join_requests').select('*').eq('group_id', gid).eq('status', 'pending');
+        const { data: reqs } = await sb.from('group_join_requests').select('*').eq('group_id', gid).eq('status', 'pending');
         list.innerHTML = '';
         if (!reqs || reqs.length === 0) { list.innerHTML = '<p class="text-center text-gray-400">No pending requests.</p>'; return; }
         reqs.forEach(r => {
@@ -420,9 +420,9 @@ window.logic = {
     },
 
     handleReq: async (reqId, userId, action) => {
-        await supabase.from('group_join_requests').update({ status: action }).eq('id', reqId);
+        await sb.from('group_join_requests').update({ status: action }).eq('id', reqId);
         if (action === 'approve') {
-            await supabase.from('group_members').insert({ group_id: currentManagingGroupId, user_id: userId });
+            await sb.from('group_members').insert({ group_id: currentManagingGroupId, user_id: userId });
         }
         window.logic.loadReqs(currentManagingGroupId);
     },
@@ -432,7 +432,7 @@ window.logic = {
         const list = document.getElementById('mentor-list');
         if (!list) return;
         list.innerHTML = '<p class="text-center text-gray-400 py-4">Loading...</p>';
-        const { data: mentors } = await supabase.from('profiles').select('*').eq('role', 'mentor');
+        const { data: mentors } = await sb.from('profiles').select('*').eq('role', 'mentor');
         list.innerHTML = '';
         if (!mentors || mentors.length === 0) { list.innerHTML = '<p class="text-center text-gray-400">No mentors yet.</p>'; return; }
 
@@ -454,7 +454,7 @@ window.logic = {
     sendMessage: async () => {
         const msg = document.getElementById('msg-input').value.trim();
         if (!msg || !currentUser) return;
-        await supabase.from('notifications').insert({ to_user_id: currentMentorUid, from_user_name: currentUser.name, type: 'mentor_msg', message: msg });
+        await sb.from('notifications').insert({ to_user_id: currentMentorUid, from_user_name: currentUser.name, type: 'mentor_msg', message: msg });
         document.getElementById('msg-input').value = '';
         window.ui.toggleModal('message-modal');
         ui.toast("Message Sent!", 'success');
@@ -463,7 +463,7 @@ window.logic = {
     loadNotifications: async () => {
         if (!currentUser) return;
         const list = document.getElementById('notifications-list');
-        const { data: notifs } = await supabase.from('notifications').select('*').eq('to_user_id', currentUser.id).order('created_at', { ascending: false });
+        const { data: notifs } = await sb.from('notifications').select('*').eq('to_user_id', currentUser.id).order('created_at', { ascending: false });
         if (notifs && notifs.length > 0) {
             notifs.forEach(n => {
                 list.insertAdjacentHTML('afterbegin', `<div class="p-3 bg-indigo-50 rounded-xl border-l-4 border-indigo-500 text-sm mb-2"><div class="flex justify-between items-start"><p class="font-bold text-indigo-800">Message from ${escapeHtml(n.from_user_name)}</p><span class="text-[10px] text-indigo-600 bg-indigo-100 px-2 py-0.5 rounded-full">Message</span></div><p class="text-xs text-slate-600 mt-1">${escapeHtml(n.message)}</p></div>`);
@@ -475,14 +475,14 @@ window.logic = {
     addSuggestion: async () => {
         const t = document.getElementById('sug-text').value;
         if (!t || !currentUser) return;
-        await supabase.from('suggestions').insert({ text: t, user_id: currentUser.id });
+        await sb.from('suggestions').insert({ text: t, user_id: currentUser.id });
         document.getElementById('sug-text').value = '';
         window.logic.loadSuggestions();
     },
     loadSuggestions: async () => {
         const list = document.getElementById('sug-list');
         if (!list) return;
-        const { data } = await supabase.from('suggestions').select('*').order('created_at', { ascending: false });
+        const { data } = await sb.from('suggestions').select('*').order('created_at', { ascending: false });
         list.innerHTML = '';
         if (data) data.forEach(s => list.innerHTML += `<div class="bg-white p-3 rounded-lg text-sm shadow-sm border border-slate-100">${escapeHtml(s.text)}</div>`);
     },
@@ -492,7 +492,7 @@ window.logic = {
         e.preventDefault();
         if (!currentUser) return;
         const d = new FormData(e.target);
-        await supabase.from('projects').insert({ title: d.get('title'), description: d.get('desc'), github_url: d.get('github'), user_id: currentUser.id });
+        await sb.from('projects').insert({ title: d.get('title'), description: d.get('desc'), github_url: d.get('github'), user_id: currentUser.id });
         e.target.reset();
         ui.toast("Project Added!", 'success');
         window.logic.loadProjects();
@@ -501,7 +501,7 @@ window.logic = {
         if (!currentUser) return;
         const list = document.getElementById('projects-list');
         if (!list) return;
-        const { data } = await supabase.from('projects').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
+        const { data } = await sb.from('projects').select('*').eq('user_id', currentUser.id).order('created_at', { ascending: false });
         list.innerHTML = '';
         if (!data || data.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 text-sm">No projects submitted yet.</p>'; return; }
         data.forEach(p => {
@@ -516,7 +516,7 @@ window.logic = {
         e.preventDefault();
         if (!currentUser) return;
         const d = new FormData(e.target);
-        await supabase.from('jobs').insert({ company: d.get('company'), role: d.get('role'), salary: d.get('salary'), eligibility: d.get('eligibility'), posted_by: currentUser.id });
+        await sb.from('jobs').insert({ company: d.get('company'), role: d.get('role'), salary: d.get('salary'), eligibility: d.get('eligibility'), posted_by: currentUser.id });
         e.target.reset();
         ui.toast("Job Opening Posted!", 'success');
         window.logic.loadJobsForFaculty();
@@ -524,14 +524,14 @@ window.logic = {
     loadJobsForFaculty: async () => {
         const list = document.getElementById('faculty-job-list');
         if (!list) return;
-        const { data } = await supabase.from('jobs').select('*').order('created_at', { ascending: false });
+        const { data } = await sb.from('jobs').select('*').order('created_at', { ascending: false });
         list.innerHTML = '';
         if (data) data.forEach(j => { list.innerHTML += `<div class="bg-purple-50 p-3 rounded-lg border border-purple-100 text-sm"><b>${escapeHtml(j.company)}</b> - ${escapeHtml(j.role)} (${escapeHtml(j.salary)})</div>`; });
     },
     loadJobsForStudent: async () => {
         const list = document.getElementById('student-job-list');
         if (!list) return;
-        const { data } = await supabase.from('jobs').select('*').order('created_at', { ascending: false });
+        const { data } = await sb.from('jobs').select('*').order('created_at', { ascending: false });
         list.innerHTML = '';
         if (!data || data.length === 0) { list.innerHTML = '<p class="text-center text-gray-400 text-sm">No job openings yet.</p>'; return; }
         data.forEach(j => {
@@ -545,7 +545,7 @@ window.logic = {
         if (!currentUser) return;
         const d = new FormData(e.target);
         const file = document.getElementById('material-file-input')?.files[0];
-        await supabase.from('materials').insert({ title: d.get('title'), type: d.get('type'), link: d.get('link') || null, description: d.get('desc'), file_name: file ? file.name : null, uploaded_by: currentUser.id });
+        await sb.from('materials').insert({ title: d.get('title'), type: d.get('type'), link: d.get('link') || null, description: d.get('desc'), file_name: file ? file.name : null, uploaded_by: currentUser.id });
         e.target.reset();
         ui.toast("Material Uploaded!", 'success');
         window.logic.loadMaterials();
@@ -553,7 +553,7 @@ window.logic = {
     loadMaterials: async () => {
         const list = document.getElementById('materials-list');
         if (!list) return;
-        const { data } = await supabase.from('materials').select('*').order('created_at', { ascending: false });
+        const { data } = await sb.from('materials').select('*').order('created_at', { ascending: false });
         list.innerHTML = '';
         if (!data || data.length === 0) { list.innerHTML = '<p class="text-center text-slate-400 text-sm">No materials uploaded yet.</p>'; return; }
         data.forEach(m => {
@@ -573,7 +573,7 @@ window.logic = {
         const rating = document.querySelector('input[name="rating"]:checked');
         const text = document.getElementById('feedback-text').value.trim();
         if (!rating) return ui.toast('Please select a star rating.', 'error');
-        await supabase.from('feedback').insert({ rating: parseInt(rating.value), text, user_id: currentUser?.id });
+        await sb.from('feedback').insert({ rating: parseInt(rating.value), text, user_id: currentUser?.id });
         document.getElementById('feedback-text').value = '';
         document.querySelectorAll('input[name="rating"]').forEach(r => r.checked = false);
         ui.toast('Thank you for your feedback!', 'success');
@@ -606,7 +606,7 @@ window.logic = {
         if (!file) return;
         const reader = new FileReader();
         reader.onload = async (e) => {
-            await supabase.from('profiles').update({ profile_image_url: e.target.result }).eq('id', currentUser.id);
+            await sb.from('profiles').update({ profile_image_url: e.target.result }).eq('id', currentUser.id);
             currentUser.profile_image_url = e.target.result;
             window.ui.updateProfileImg(currentUser.profile_image_url);
             window.logic.renderProfile();
@@ -616,7 +616,7 @@ window.logic = {
     uploadResume: async (input) => {
         const file = input.files[0];
         if (file && file.type === 'application/pdf') {
-            await supabase.from('profiles').update({ resume_name: file.name }).eq('id', currentUser.id);
+            await sb.from('profiles').update({ resume_name: file.name }).eq('id', currentUser.id);
             currentUser.resume_name = file.name;
             window.logic.renderProfile();
         }
@@ -626,7 +626,7 @@ window.logic = {
         const val = e.target.skill.value;
         if (!val || !currentUser) return;
         const skills = [...(currentUser.skills || []), val];
-        await supabase.from('profiles').update({ skills }).eq('id', currentUser.id);
+        await sb.from('profiles').update({ skills }).eq('id', currentUser.id);
         currentUser.skills = skills;
         e.target.reset();
         window.logic.renderProfile();
@@ -636,7 +636,7 @@ window.logic = {
         const d = new FormData(e.target);
         const c = { name: d.get('name'), org: d.get('org') };
         const certs = [...(currentUser.certs || []), c];
-        await supabase.from('profiles').update({ certs }).eq('id', currentUser.id);
+        await sb.from('profiles').update({ certs }).eq('id', currentUser.id);
         currentUser.certs = certs;
         e.target.reset();
         window.logic.renderProfile();
