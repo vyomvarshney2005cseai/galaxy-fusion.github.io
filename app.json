@@ -1,0 +1,26 @@
+{
+  "expo": {
+    "name": "Galaxy Fusion",
+    "slug": "galaxy-fusion",
+    "version": "2.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "primaryColor": "#0f766e",
+    "splash": {
+      "backgroundColor": "#0f766e"
+    },
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.galaxyfusion.campus"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0f766e"
+      },
+      "package": "com.galaxyfusion.campus"
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

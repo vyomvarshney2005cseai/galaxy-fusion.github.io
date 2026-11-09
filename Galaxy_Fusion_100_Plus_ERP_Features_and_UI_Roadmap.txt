@@ -1,0 +1,292 @@
+================================================================================
+GALAXY FUSION: COMPREHENSIVE PROJECT ANALYSIS, COLLEGE ERP & APP RESEARCH,
+AND 120-POINT FEATURE & UI/UX TRANSFORMATION ROADMAP
+================================================================================
+Project Path : /Users/vyomvarshney2005/Desktop/Galaxy Fusion/galaxy-fusion.github.io
+Tech Stack   : React Native (Expo SDK 51 + TypeScript) + Supabase PostgreSQL/Realtime
+Vision       : Individual College ERP + LinkedIn + GitHub Collaboration Hub
+               (Student–Student · Student–Faculty · Student–College)
+================================================================================
+
+--------------------------------------------------------------------------------
+SECTION 1: AUDIT & ANALYSIS OF THE CURRENT GALAXY FUSION PROJECT
+--------------------------------------------------------------------------------
+1.1 Current Codebase & Architecture Overview
+- Multi-Tenant College Scoping (`src/types/index.ts`, `src/data/mockCampusData.ts`, `schema.sql`):
+  The app currently supports individual college workspaces (such as GLA University Mathura, IET Lucknow, KIET Ghaziabad, AKGEC Ghaziabad, and JSS Noida) with `colleges` and `college_id` tenancy across 13 Supabase PostgreSQL tables (`profiles`, `projects`, `groups`, `group_members`, `group_join_requests`, `group_messages`, `teammate_requests`, `faculty_projects`, `jobs`, `materials`, `suggestions`, `feedback`, and `notifications`).
+- Five-Tab React Native Architecture (`App.tsx`):
+  1) `FeedScreen.tsx` (Campus Hub): 3-Way Collaboration Banner (`Student–Student`, `Student–Faculty`, `Student–College`), "Ask for Teammates" composer, 8-module launcher grid, and feed cards with embedded GitHub repository cards.
+  2) `TeamsScreen.tsx` (Teammates): 3 sub-tabs (`🤝 Ask Teammates`, `🔍 Find Peers`, `💬 Skill Groups`) enabling students to broadcast missing hackathon skills, search verified college peers by skill/branch, and chat in real time.
+  3) `ReposScreen.tsx` (GitHub): Campus repository explorer with language filters (`TypeScript`, `React Native`, `Python`, `C++`), star counters, and direct GitHub code links.
+  4) `CareerScreen.tsx` (College & Labs): 4 sub-tabs (`🏛️ College Openings & T&P`, `🔬 Faculty Research Labs`, `📣 College Townhall`, `🎓 Mentors & Alumni`) with Semester 1–8 CGPA calculation and auto-eligibility checks.
+  5) `ProfileScreen.tsx` (Profile): Unified LinkedIn + GitHub student portfolio with a 12-week commit heatmap, skill endorsements, certifications, study materials, campus clubs, and anonymous feedback.
+
+1.2 Key Strengths & Current Gaps Identified in the Audit
+- Strengths:
+  * Combines verified college roll-number identity with real proof-of-work (GitHub repositories) and career readiness (Semester 1–8 CGPA + T&P placement drives).
+  * Bridges the three core campus relationships (`Student–Student`, `Student–Faculty`, `Student–College`) in a single React Native codebase that also runs in the browser (`index.html` + `main.js`).
+- Current Functional & UI Gaps Compared to Full-Scale College ERP Portals:
+  * Missing daily high-frequency ERP utility hooks (live QR attendance marking, daily class timetable with room numbers, exam hall-ticket downloads, fee/dues status, hostel/gate-pass workflows, and academic assignment submissions) that bring students into the app 3–5 times every day.
+  * Information density on `FeedScreen.tsx` and `ProfileScreen.tsx`: the 8-module launcher grid, role switcher bar, and multi-tab sub-navigation compete visually and need progressive disclosure, Bento-grid hierarchy, and native gesture sheets.
+  * GitHub data (`ReposScreen.tsx`) and academic records (`CareerScreen.tsx`) currently rely on manual text entry rather than live GitHub REST/GraphQL OAuth syncing and verified registrar/ERP grade locks.
+
+--------------------------------------------------------------------------------
+SECTION 2: RESEARCH ON LEADING COLLEGE ERP PORTALS & STUDENT APPS
+--------------------------------------------------------------------------------
+To design the next-generation roadmap for Galaxy Fusion, we benchmarked 12 leading Indian and global higher-education ERP portals, campus recruitment platforms, and student builder networks:
+
+1. Digii / CollPoll ([Digii (formerly CollPoll) Product Profile](https://www.saasworthy.com/product/collpoll) & [CollPoll Smart Attendance System](https://digiicampus.com/blog/maximize-academic-efficiency-with-collpolls-attendance-management-system/)):
+   - Core ERP & Engagement Modules: Offers 40+ integrated solutions across Administration (admission automation, fee management, infrastructure & venue booking, hostel management, mess/canteen automation, placement & internship), Learning (choice-based course registration, timetable management, smart attendance, outcome-based education, examination management), and Campus Experience (clubs/chapters, campus commerce, 1,000+ dynamic workflow automations, and student e-portfolios).
+   - Key Lesson for Galaxy Fusion: Students use a campus app daily when administrative workflows (venue booking, gate passes, attendance, mess/canteen QR) live alongside social clubs and e-portfolios.
+
+2. Superset ([Superset Campus Placement Automation](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/) & [Superset Faculty Placement Alignment](https://joinsuperset.com/blogs/faculty-as-placement-champions-enabling-academic-industry-alignment-through-placement-software/)):
+   - Core Placement Modules: Centralizes placement officers, students, and recruiters with automated eligibility filtering, AI-powered resume parsing & shortlisting, calendar-synced interview slot scheduling, live virtual drive-day control centers, offer letter tracking, and NAAC accreditation reporting.
+   - Key Lesson for Galaxy Fusion: Upgrade our `CareerScreen.tsx` placement portal from simple "1-Tap Apply" cards into a multi-stage application pipeline (`Applied -> Aptitude Test -> Technical Round -> HR -> Offer Letter`) with automated batch/branch/CGPA/backlog rule enforcement.
+
+3. Camu Digital Campus ([Camu University Management ERP](https://camudigitalcampus.com/university-management-erp-software/) & [Camu Student Information System](https://camudigitalcampus.com/student-information-system/)):
+   - Core SIS + LMS Modules: Unifies Student Information System (SIS) and Learning Management System (LMS) across flexible Choice-Based Credit System (CBCS) registration, Outcome-Based Education (OBE) mapping, digital hall tickets, revaluation requests, online fee invoicing, library management, and transport tracking.
+   - Key Lesson for Galaxy Fusion: Connect student projects and study materials (`ProfileScreen.tsx`) directly to course codes and CBCS credits so academic coursework and GitHub proof-of-work reinforce each other.
+
+4. Academia ERP by Serosoft ([Academia Student Portal & App](https://www.academiaerp.com/modules/student-portal-and-app/) & [Academia Mobile SIS & SERA AI](https://www.academiaerp.com/blog/mobile-access-in-student-information-systems-key-features-and-benefits/)):
+   - Core Mobile Capabilities: Provides QR-code classroom attendance scanning, daily/weekly/monthly timetable views, real-time exam schedule & result alerts, hall-ticket downloads, fee dues payment, assignment submission, and the SERA voice-based AI assistant for instant student queries.
+   - Key Lesson for Galaxy Fusion: Add a persistent "Today on Campus" header widget (next class room + QR attendance scanner + voice/chat AI campus assistant) to drive daily student opens.
+
+5. Samarth eGov Suite ([Samarth eGov Suite Overview](https://samarth.edu.in/about/) & [Samarth eGov Product Guide](https://samarth.edu.in/product-guide/)):
+   - Core University Governance Modules: Built by the Ministry of Education across 40+ modules spanning Academics & Student Lifecycle (programme/courses, evaluation & grading, research, student feedback, training & placement, alumni portal), Research Project & Grants Management, Grievance Management, Hostel Residence Allocation, Health Security, and Sports/Service Desk Management.
+   - Key Lesson for Galaxy Fusion: Formalize our `Student–Faculty` research lab slots with a structured Research Project & Grants Management workflow and upgrade our suggestion box into a tracked Grievance & Townhall Service Desk with SLA timers.
+
+6. MasterSoft Cloud ERP ([MasterSoft Student Information Management System](https://www.mastersoft.ai/student-information-management-system-sims) & [MasterSoft SIS Gartner Overview](https://www.gartner.com/reviews/product/mastersoft-student-information-system)):
+   - Core Lifecycle Modules: Covers admission-to-alumni tracking, timetable & scheduling, attendance, online assessment execution, library book tracking, student discipline/merit records, and state regulatory compliance dashboards.
+   - Key Lesson for Galaxy Fusion: Provide faculty and HODs with a real-time departmental analytics view (attendance vs. CGPA vs. GitHub activity vs. placement readiness).
+
+7. Ellucian Student & Experience ([Ellucian College Mobile App Student Research](https://www.ellucian.com/blog/college-mobile-apps-what-students-value) & [Ellucian Student Platform](https://www.ellucian.com/products/student)):
+   - Core Student Experience Insights: Ellucian's student research highlights 8 non-negotiables for college mobile apps: (1) 24/7 convenience, (2) at-a-glance financial/grant clarity, (3) interactive campus map & building navigation, (4) a "one-stop shop" dashboard, (5) desktop-to-mobile parity, (6) integrated SIS security, (7) biometric Single Sign-On (Touch ID / Face ID) so students don't log into 3–4 separate portals, and (8) personalized push notifications for clubs and events.
+   - Key Lesson for Galaxy Fusion: Replace separate logins with biometric SSO + a unified digital student ID QR code that works across library, hostel, lab entry, and event check-ins.
+
+8. Instructure Canvas Mobile App ([Canvas Mobile Features Matrix](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features) & [Canvas Student iOS App](https://apps.apple.com/us/app/canvas-by-instructure/id480883488)):
+   - Core Academic UX Features: Offers "What-If" grade score simulation, built-in mobile document scanner for assignment submissions, unified To-Do list with deadline reminders, offline course file caching, dark mode, VPAT 2.2 accessibility compliance, and home-screen mobile widgets.
+   - Key Lesson for Galaxy Fusion: Add an interactive "What-If CGPA Calculator" in `CareerScreen.tsx` so students can see what SGPA they need in upcoming semesters to cross the 7.5 or 8.5 Super Dream placement cutoff.
+
+9. Unstop ([Unstop Hackathon & Campus Hiring Platform](https://unstop.com/blog/organizing-a-hackathon-on-unstop) & [Unstop Hackathon Playbook](https://unstop.com/blog/how-to-organise-hackathons)):
+   - Core Competition & Teammate Features: Combines branded hackathon microsites, team size & eligibility enforcement, multi-stage rounds (quiz/aptitude -> GitHub prototype & 2–5 min demo video submission -> virtual jury demo day), live leaderboards, and AI-powered candidate shortlisting.
+   - Key Lesson for Galaxy Fusion: Upgrade `TeamsScreen.tsx` so college hackathons (like SIH Internal Round) include stage timelines, countdown clocks, team readiness checklists, and direct GitHub + demo video submission.
+
+10. Devfolio ([Devfolio Builder Profile & Proof-of-Work Hub](https://devfolio.co/blog/dev-folio-profile/) & [Devfolio University Hackathon Guide](https://guide.devfolio.co/docs/guide/set-up-your-first-hackathon-on-devfolio)):
+    - Core Builder Portfolio Features: Integrates GitHub repositories, monthly commit/PR/code-review summaries, technical blog imports (Medium/Hashnode/RSS), Project Spotlight cards, custom `README.md` bio canvas, Quadratic Voting / Cheer for community projects, and verifiable credentials for hackathons won and grants received.
+    - Key Lesson for Galaxy Fusion: Turn `ProfileScreen.tsx` into a true "Proof-of-Work Builder Folio" with markdown `README.md` support, verifiable faculty/hackathon badges, and community "Cheers" on student projects.
+
+11. Handshake ([Handshake Student Career Network](https://joinhandshake.com/blog/students/handshake-will-help-you-get-the-job-heres-how/) & [Handshake Student & Alumni Accounts](https://support.joinhandshake.com/hc/en-us/articles/4421014632983-An-Overview-of-Student-and-Alumni-Accounts-in-Handshake)):
+    - Core Career Social Features: Delivers personalized job recommendations by major/skills, proactive recruiter-to-student direct messaging, peer-written internship & company interview reviews, Q&A threads, and seamless transition from student account to alumni mentor account.
+    - Key Lesson for Galaxy Fusion: Add a "Campus Interview Experiences & Company Reviews" repository inside `CareerScreen.tsx` where placed seniors share round-by-round interview questions for companies visiting that specific college.
+
+12. GitHub Education ([GitHub Education for Students](https://docs.github.com/en/education/about-github-education/github-education-for-students/about-github-education-for-students) & [GitHub Student Developer Pack](https://education.github.com/pack)):
+    - Core Developer Ecosystem Features: Connects verified students to GitHub Classroom assignments with autograding and deadlines, GitHub Codespaces (up to 180 core hours/month free), GitHub Copilot student access, GitHub Community Exchange repository discovery, and Campus Experts events.
+    - Key Lesson for Galaxy Fusion: Integrate GitHub Classroom assignment tracking and a "Claim Free Student Developer Tools / Cloud Credits" hub directly inside `ReposScreen.tsx`.
+
+================================================================================
+SECTION 3: 120 ACTIONABLE ITEMS — FEATURES TO ADD & UI/UX CHANGES
+================================================================================
+
+--------------------------------------------------------------------------------
+PART I: CORE COLLEGE ERP & DAILY ACADEMIC UTILITY FEATURES TO ADD (ITEMS #1–#25)
+--------------------------------------------------------------------------------
+1. Dynamic QR-Code Classroom Attendance Scanner: Inspired by [Academia Student Portal & App](https://www.academiaerp.com/modules/student-portal-and-app/), allow students to scan a faculty-projected rotating QR code (with GPS geofence verification inside the campus) to mark lecture and lab attendance in 2 seconds.
+2. Live Subject-Wise Attendance Shortage Alert Engine: Inspired by [Digii / CollPoll Attendance Management](https://digiicampus.com/blog/maximize-academic-efficiency-with-collpolls-attendance-management-system/), display a color-coded attendance ring per subject (`>=75% Safe` in emerald, `70–74% Warning` in amber, `<70% Critical` in rose) and calculate exactly how many consecutive classes a student must attend to reach 75%.
+3. Interactive Daily & Weekly Timetable with Room Locator: Inspired by [Academia Mobile SIS](https://www.academiaerp.com/blog/mobile-access-in-student-information-systems-key-features-and-benefits/), add a swipeable day-by-day class schedule showing course code, faculty name, lab/room number, and a "Next Class in 12 mins — Block III, Room 304" live banner.
+4. "What-If" CGPA & Target SGPA Simulator: Inspired by [Canvas Mobile Features](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), upgrade the Semester 1–8 CGPA form in `CareerScreen.tsx` so students can slide hypothetical future grades and see the exact SGPA required in Semesters 6–8 to cross 7.5, 8.0, or 8.5 placement cutoffs.
+5. Choice-Based Credit System (CBCS) & Elective Planner: Inspired by [Camu University Management ERP](https://camudigitalcampus.com/university-management-erp-software/), let students browse open departmental electives, view credit breakdowns (L-T-P), check seat availability, and see which seniors recommend each elective for AI/ML, Systems, or Product roles.
+6. Digital Exam Hall Ticket & Seating Plan Card: Inspired by [Camu Examination Management](https://camudigitalcampus.com/university-management-erp-software/) and [Academia Student Portal](https://www.academiaerp.com/modules/student-portal-and-app/), generate a downloadable PDF/QR admit card with mid-sem and end-sem exam dates, room numbers, and seat numbers once fee dues are cleared.
+7. Mid-Sem & End-Sem Marks Breakdown + Revaluation Request Workflow: Inspired by [Camu University Management ERP](https://camudigitalcampus.com/university-management-erp-software/), allow students to view internal assessment marks (Quiz 1, Quiz 2, Sessional, Lab Viva), view scanned answer-booklet remarks, and submit digital scrutiny/revaluation requests.
+8. Unified Digital Campus ID Card (Apple Wallet / Google Wallet Style): Inspired by [Ellucian College Mobile App Student Research](https://www.ellucian.com/blog/college-mobile-apps-what-students-value), add a flip-card Digital College ID in the top header with the student's verified photo, Roll Number barcode/QR, blood group, hostel status, and validity badge for library and main-gate entry.
+9. Online Fee Ledger, Scholarship Tracker & Instant UPI Receipt Vault: Inspired by [MasterSoft Student Information Management System](https://www.mastersoft.ai/student-information-management-system-sims), provide a transparent breakdown of tuition, hostel, exam fees, UP state scholarships, and downloadable PDF receipts.
+10. Automated "No-Dues" Clearance Tracker: Inspired by [MasterSoft SIS Lifecycle](https://www.gartner.com/reviews/product/mastersoft-student-information-system), replace paper no-dues slips with a live 6-department digital checklist (Library, Hostel, Accounts, Computer Lab, Sports, T&P Cell) for semester registration and graduation.
+11. Smart Library Book Search, Due-Date Alerts & Barcode Self-Checkout: Inspired by [Camu University Management ERP](https://camudigitalcampus.com/university-management-erp-software/), let students search physical library availability by ISBN/subject, reserve books, and receive push alerts 48 hours before overdue fines start.
+12. Hostel Day-Pass, Night-Out & Leave Approval Workflow: Inspired by [Digii / CollPoll Administration Features](https://www.saasworthy.com/product/collpoll) and [Samarth eGov Suite](https://samarth.edu.in/about/), let hostellers request weekend or hackathon travel gate passes with automated parent SMS notification, warden approval, and main-gate security QR verification.
+13. Live Campus Bus & Shuttle GPS Telemetry Widget: Connect the student project `campus-bus-tracker-rn` in `ReposScreen.tsx` into a live ERP utility showing bus route numbers, morning/evening stops, driver contact, and live ETA on a map.
+14. Campus Venue, Auditorium & Innovation Lab Slot Booking: Inspired by [Digii / CollPoll Infrastructure & Venue Booking](https://www.saasworthy.com/product/collpoll), let verified club leads and hackathon squads request after-hours access to seminar halls, AI/GPU labs, or robotics arenas with faculty advisor digital sign-off.
+15. Mess Menu, Nutritional Poll & Canteen Pre-Order QR: Inspired by [Digii / CollPoll Mess & Canteen Automation](https://www.saasworthy.com/product/collpoll), display today's hostel mess menu with student quality ratings and allow pre-ordering from the campus canteen during 15-minute class breaks.
+16. Course Syllabus Progress & Outcome-Based Education (OBE) Tracker: Inspired by [Camu University Management ERP](https://camudigitalcampus.com/university-management-erp-software/), show unit-by-unit syllabus completion status (Unit 1 to Unit 5) for every enrolled subject along with mapped Course Outcomes (CO1–CO5).
+17. Mobile Document Scanner & Assignment Submission Box: Inspired by [Canvas Mobile Features](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), allow students to scan handwritten lab records or upload PDF/GitHub links for course assignments with countdown timers and plagiarism/rubric feedback.
+18. Academic Calendar & Holiday Sync (iCal / Google Calendar Export): Inspired by [Academia Mobile SIS](https://www.academiaerp.com/blog/mobile-access-in-student-information-systems-key-features-and-benefits/), provide a unified college calendar merging exam dates, gazetted holidays, placement drives, and hackathon deadlines with 1-tap phone calendar sync.
+19. Instant Bonafide, NOC & Character Certificate Generator: Inspired by [Samarth eGov Suite](https://samarth.edu.in/about/), let students request digitally signed No-Objection Certificates (NOC) for external internships or SIH travel and download them with a verifiable QR seal.
+20. Campus Health Center & Counselor Appointment Booking: Inspired by [Samarth eGov Health Management](https://samarth.edu.in/about/), let students book confidential slots with the campus medical officer or student wellness counselor and request medical leave certificates.
+21. Hostel Roommate Matcher & Maintenance Service Desk: Inspired by [Samarth eGov Service Desk](https://samarth.edu.in/about/), allow hostellers to log electrical, Wi-Fi, plumbing, or AC repair tickets with photo attachments and track technician resolution times.
+22. Interactive 2D/3D Campus Map & Lab Wayfinding: Inspired by [Ellucian College Mobile App Student Research](https://www.ellucian.com/blog/college-mobile-apps-what-students-value), provide an interactive searchable map of academic blocks, labs, placement cells, canteens, and exam rooms so 1st-year students and visiting recruiters can navigate effortlessly.
+23. Emergency Campus SOS & Night-Safety Walk Escort: Inspired by [Ellucian College Mobile App Student Research](https://www.ellucian.com/blog/college-mobile-apps-what-students-value) and [Samarth eGov Security Management](https://samarth.edu.in/about/), include a persistent quick-access SOS button that shares live GPS coordinates with the Chief Proctor, hostel warden, and campus security control room.
+24. Lost & Found Campus Registry with AI Image Matching: Allow students to post lost ID cards, calculators, earbuds, or lab coats with location tags and instant push notifications when a matching item is logged at security.
+25. Voice & Chat AI Campus Assistant ("Galaxy Copilot"): Inspired by [Academia ERP's SERA AI Assistant](https://www.academiaerp.com/blog/mobile-access-in-student-information-systems-key-features-and-benefits/), add a natural-language assistant that answers "What is my attendance in Operating Systems?", "Which companies are visiting this week for CGPA > 8.0?", or "Find me 2 PyTorch teammates in 3rd year."
+
+--------------------------------------------------------------------------------
+PART II: STUDENT–STUDENT COLLABORATION & TEAMMATE FEATURES TO ADD (ITEMS #26–#45)
+--------------------------------------------------------------------------------
+26. Complementary Skill-Gap Algorithm for "Ask for Teammates": Inspired by [Unstop AI-Powered Targeting](https://unstop.com/blog/organizing-a-hackathon-on-unstop), automatically rank and recommend verified students from the same college whose top GitHub languages match the exact `missing_skills` on a teammate request card.
+27. Mandatory Diversity & SIH Rule Validator on Squad Cards: In Smart India Hackathon (SIH), teams must have 6 members including at least 1 female student; add a live "SIH Rule Check: 4/6 Members · ✓ Female Member Included · 2 Spots Left" validator badge on `TeamsScreen.tsx`.
+28. Cross-Branch Hardware + Software Pairing Bridge: Create a dedicated filter in `TeamsScreen.tsx` that pairs CSE/IT software builders (`React Native`, `FastAPI`, `PyTorch`) with ECE/EEE/Mechanical hardware builders (`ESP32`, `ROS2`, `PCB Design`, `3D Printing`) for IoT and robotics hackathons.
+29. 60-Second Video / Audio Pitch on Teammate Requests: Inspired by [Unstop Hackathon Submissions](https://unstop.com/hackathons/elite-her-community-hackathon-dav-college-dav-chandigarh-1651625), let squad leaders attach a 60-second voice note or screen-recording demo when asking for teammates so peers can immediately see the project vision.
+30. Verified Teammate Reliability & Peer Review Score: After a hackathon or minor project concludes, allow teammates to endorse each other on specific traits (`Shipped Code on Time`, `Great UI/UX`, `Strong Presenter`), preventing "ghosting" in future campus squads.
+31. In-App Hackathon Kanban & Milestone Checklist: Once a team forms on `TeamsScreen.tsx`, auto-provision a shared workspace with a countdown timer, problem statement link, GitHub repo link, PPT link, and task cards (`Idea`, `Prototype`, `Pitch Deck`, `Demo Video`).
+32. Peer-to-Peer Code Review & Pull Request Bounty Board: Inspired by [Devfolio Builder Profile](https://devfolio.co/blog/dev-folio-profile/), let students post "Need help debugging React Native Maps WebSockets or YOLOv9 training" and reward campus peers who submit helpful PRs with profile "Cheers" and karma points.
+33. Exam-Week Study Group & Pomodoro Room Spawner: Inspired by [Canvas Mobile Group Collaborations](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), allow students in the same course code to spin up temporary 48-hour mid-sem revision rooms with shared formula sheets, past-year question papers (PYQs), and synchronized Pomodoro timers.
+34. Senior-to-Junior Verified PYQ & Lab Manual Vault: Upgrade the `Materials` tab in `ProfileScreen.tsx` so notes, lab manuals, and previous-year question papers are tagged by university subject code (`KCS-501`, `BCSE-052`), semester, and professor name, with community upvotes.
+35. Peer Mock Interview & DSA Buddy Matcher: Let 3rd and 4th-year students pair up for 45-minute peer mock interviews (DSA, System Design, or HR) with a built-in problem prompt and structured rubric.
+36. Campus Hardware, Sensor & Book Lending Exchange: Allow students to lend or rent Arduino kits, Raspberry Pi boards, soldering irons, scientific calculators, and reference books to verified juniors using roll-number escrow tracking.
+37. Club Event Ticketing, QR Check-In & Automated Attendance Duty (OD) Slips: Inspired by [Digii / CollPoll Clubs & Chapters](https://www.saasworthy.com/product/collpoll), when a student registers and scans in at a technical workshop or hackathon, automatically add the event to their co-curricular transcript and submit an Official Duty (OD) attendance request.
+38. Daily Campus Coding & Aptitude Micro-Sprint Leaderboard: Inspired by [Unstop Practice & Coding Challenges](https://unstop.com/blog/organizing-a-hackathon-on-unstop), feature a 1-question-a-day DSA or aptitude challenge with branch-wise and year-wise college leaderboards.
+39. "Build in Public" Weekly Ship Log & Community Cheers: Inspired by [Devfolio Cheer & Quadratic Voting](https://devfolio.co/blog/dev-folio-profile/), host a Sunday "Campus Demo Day" feed where student teams post 30-second GIFs of what they built that week and peers vote with quadratic cheers.
+40. Threaded Code-Snippet & LaTeX Chat in Skill Groups: Upgrade `group_messages` in `TeamsScreen.tsx` to support syntax-highlighted code blocks, GitHub issue previews, poll voting, and pinned resource links.
+41. Verified Technical Blog & Hashnode/Medium Importer: Inspired by [Devfolio Builder Profile](https://devfolio.co/blog/dev-folio-profile/), automatically import and showcase technical articles written by students on Medium, Hashnode, or Dev.to inside the college feed.
+42. Ride-Share & Travel Squad Coordinator for Off-Campus Hackathons: When multiple teams from the same college qualify for an outstation hackathon (e.g., in Delhi NCR, Lucknow, or Bengaluru), group them into a verified travel coordination channel.
+43. Open-Source "Good First Issue" Campus Tagging: Inspired by [GitHub Community Exchange](https://docs.github.com/en/education/about-github-education/github-education-for-students/about-github-education-for-students), let 3rd/4th-year repo owners tag beginner-friendly issues as `campus-good-first-issue` so 1st-year students can make their first verified open-source contribution.
+44. Live Availability Status Pills on Every Student Avatar: Allow students to toggle their status badge (`🟢 Looking for SIH Team`, `🟣 Open to Faculty Research`, `🔵 Prepping for Placements`, `🟠 Busy in Exams`) visible across the directory and chat.
+45. Team Invite Deep-Links (WhatsApp / QR Shareable Squad Cards): Generate a clean visual card and deep link for any "Looking for Teammates" post so students can share it in class WhatsApp groups while routing applicants back into the verified college app.
+
+--------------------------------------------------------------------------------
+PART III: STUDENT–FACULTY RESEARCH, LABS & MENTORSHIP FEATURES (ITEMS #46–#65)
+--------------------------------------------------------------------------------
+46. Structured Faculty Research Lab & Grant Portal: Inspired by [Samarth eGov Research Project & Grants Management](https://samarth.edu.in/about/), let professors list DST/AICTE/IEEE funded projects with prerequisite skills, weekly hour commitments, stipend details, and 1-tap student application queues.
+47. B.Tech Minor & Major Project Lifecycle Manager: Replace paper synopsis sheets with an end-to-end digital workflow (`Team Formation -> Guide Allocation -> Synopsis Approval -> Mid-Term GitHub Check -> Plagiarism Check -> Final Viva Grading`).
+48. GitHub Classroom & Automated Assignment Autograding Sync: Inspired by [GitHub Education & GitHub Classroom](https://docs.github.com/en/education/about-github-education/github-education-for-students/about-github-education-for-students), allow faculty to link lab courses to GitHub Classroom template repositories and view automated test pass/fail results per roll number.
+49. Faculty Office Hours & 15-Minute Doubt Slot Scheduler: Inspired by [Canvas Scheduler Appointments](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), allow students to view a professor's cabin number and free slots and book 15-minute project review or doubt-clearing sessions.
+50. Verified Faculty Skill Endorsements ("Endorsed by Dr. Neha Gupta"): Distinguish faculty endorsements from peer endorsements on `ProfileScreen.tsx` with a gold academic badge when a professor verifies a student's skill in Machine Learning, Embedded C, or DBMS.
+51. Automated Letter of Recommendation (LOR) Request & Draft Assistant: For students applying to MS/M.Tech/GATE/Research fellowships, create a structured LOR request packet that bundles the student's verified CGPA, courses taken with that professor, co-authored papers, and top GitHub repos.
+52. Undergraduate Teaching Assistant (TA) & Lab Demonstrator Portal: Expand `INITIAL_FACULTY_PROJECTS` in `CareerScreen.tsx` so departments can recruit high-CGPA 3rd/4th-year students to mentor 1st-year programming labs, log TA hours, and issue official TA certificates.
+53. IEEE / Springer / Conference Paper Co-Authorship Tracker: Let faculty and student co-authors track manuscript drafts, dataset links, LaTeX Overleaf links, conference submission deadlines, and college publication-fee reimbursement status.
+54. Faculty-to-Batch Targeted Broadcasts with Read Receipts: Inspired by [Academia Student Portal Notifications](https://www.academiaerp.com/modules/student-portal-and-app/), allow faculty to send push notifications to a specific branch, section, or lab group (e.g., `CSE-AI 3rd Year Section A`) and see how many students have read the notice.
+55. Patent & Incubation Disclosure Workflow with College IPR Cell: Provide a guided form for student-faculty teams to submit invention disclosures for campus patent filing grants.
+56. Live Classroom Poll, Quiz & Muddiest-Point Pulse Check: Let professors launch a 60-second live conceptual MCQ or "Did you understand today's DP lecture?" pulse during class to gauge comprehension in real time.
+57. Faculty "Talent Scout" Filter for Funded Consultancies: Inspired by [Superset Faculty as Placement Champions](https://joinsuperset.com/blogs/faculty-as-placement-champions-enabling-academic-industry-alignment-through-placement-software/), let faculty filter their college's entire student directory by `CGPA >= 8.0 + GitHub Commits >= 100 + Skill = PyTorch` to invite top builders to industrial consultancy projects.
+58. Digital Lab Equipment & GPU Server Queue Reservation: Allow research students to book time slots on departmental NVIDIA GPU workstations, 3D printers, or IoT spectrum analyzers with faculty supervisor approval.
+59. Rubric-Based Project Evaluation & Viva Scorecard: Inspired by [Canvas SpeedGrader Rubrics](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), give internal and external viva examiners a mobile tablet scorecard to grade student project teams on Innovation, Code Quality, UI/UX, and Presentation.
+60. Academic At-Risk Early Warning Dashboard for Faculty Mentors: Inspired by [MasterSoft Student Experience & Retention](https://www.mastersoft.ai/student-experience-and-outcome), alert faculty class-coordinators when a mentee's attendance drops below 70% or sessional marks drop significantly so they can intervene early.
+61. Course-Linked Annotated Lecture Slides & Code Notebooks: Let professors attach Jupyter notebooks, GitHub gists, and annotated PDFs directly to specific lecture dates on the timetable.
+62. Conference Travel Grant & Hackathon Reimbursement Workflow: Allow student teams who qualify for national finals (SIH, e-Yantra, ACM ICPC) to submit faculty-endorsed travel grant requests and upload train/bus tickets for college reimbursement.
+63. Constructive Mid-Semester Course Feedback Loop: Inspired by [Digii / CollPoll Faculty Feedback](https://www.saasworthy.com/product/collpoll), run mid-semester (Week 6) anonymous constructive feedback so faculty can adjust pacing or lab examples before the semester ends, rather than only collecting feedback after finals.
+64. Industry Guest Lecture & Workshop Co-Design Board: Let students vote on which industry topics (e.g., `Rust`, `LLM Agents`, `Kubernetes`) they want the department to invite guest speakers for next month.
+65. Verified Academic Project Archive (Anti-Duplication Repository): Maintain a searchable college archive of past B.Tech major projects with GitHub links so juniors can build v2.0 extensions instead of repeating identical projects every year.
+
+--------------------------------------------------------------------------------
+PART IV: STUDENT–COLLEGE PLACEMENTS, INCUBATION & GOVERNANCE (ITEMS #66–#85)
+--------------------------------------------------------------------------------
+66. Automated Placement Eligibility Rule Engine: Inspired by [Superset Campus Placement Automation](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/), upgrade `CareerScreen.tsx` to check 10th %, 12th %, B.Tech CGPA, active backlogs, branch, gender diversity rules, and current offer tier (`Core` vs `Dream` vs `Super Dream` upgrade policy) automatically before enabling the "Apply" button.
+67. Multi-Stage Placement Application Pipeline Tracker: Inspired by [Superset Student Portal](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/), show a live visual stepper on every applied company (`✓ Applied -> ⏳ Online Assessment -> 🔒 Technical Interview -> 🔒 HR Round -> 🎉 Offer Letter`).
+68. Role-Specific Multi-Resume Builder & ATS Score Checker: Allow students to maintain 3 verified resume variants (e.g., `Full-Stack / React Native`, `AI/ML & Data Science`, `Core ECE / Embedded`) auto-populated from their Galaxy Fusion profile, plus an instant ATS keyword match score against each job description.
+69. Live Drive-Day Interview Queue & Room Pager: Inspired by [Superset Drive Day Control Centre](https://joinsuperset.com/), during on-campus placement drives, show shortlisted students their live interview panel number, waiting queue position (`You are #3 in Panel B — Report to T&P Room 102`), and instant push alerts.
+70. College-Specific Company Interview Archive ("Seniors' Placement Diaries"): Inspired by [Handshake Peer Reviews & Q&A](https://joinhandshake.com/blog/students/handshake-will-help-you-get-the-job-heres-how/), create a verified archive where placed 4th-year students and alumni document exact OA coding questions, technical round topics, and salary breakdowns for companies that visited that specific college.
+71. One-Click Recruiter Microsite & Verified Talent Book: Inspired by [Superset Employer Branding & Microsites](https://joinsuperset.com/), allow the College T&P Officer (`DEMO_COLLEGE_ADMIN`) to generate a shareable, password-protected web link of shortlisted students showing their verified CGPA, GitHub commit graphs, and top projects for visiting HR teams.
+72. Offer Letter Upload, CTC Verification & "One-Student-One-Tier" Policy Lock: Inspired by [Superset Offer Management](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/), automatically lock Core-placed students from lateral Core drives while unlocking Dream (`>8 LPA`) and Super Dream (`>15 LPA`) drives per college placement policy.
+73. Paid In-House Campus Internship Marketplace ("Build for Your College"): Expand the `Campus Internship` opening type in `CareerScreen.tsx` so the college administration can hire its own students to build campus ERP modules, admission chatbots, or lab portals for stipends or academic credits.
+74. Student Startup Incubation & Seed-Grant Milestone Tracker: Expand the `Incubation Grant` opening type in `CareerScreen.tsx` so student founders applying to the college Technology Business Incubator (TBI) can track pitch dates, ₹50,000 tranche disbursements, and mentor check-ins.
+75. Alumni Referral & Mentorship Bridge: Inspired by [Handshake Student & Alumni Accounts](https://support.joinhandshake.com/hc/en-us/articles/4421014632983-An-Overview-of-Student-and-Alumni-Accounts-in-Handshake), automatically transition graduating 4th-year students into verified `Alumni` accounts so they can post job referrals and review juniors' GitHub portfolios.
+76. Townhall SLA Tracker & Official Dean/HOD Response Workflow: Inspired by [Samarth eGov Grievance Management](https://samarth.edu.in/about/), add a 7-day SLA status badge (`Submitted -> Under HOD Review -> Approved by Dean -> Implemented`) on every student proposal in `CareerScreen.tsx` (`📣 College Townhall`).
+77. NAAC / NBA / NIRF Real-Time Accreditation Analytics Export: Inspired by [Superset Compliance & Reporting](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/), give College Admins a 1-click export of verified student publications, hackathons won, GitHub repositories, placement percentages, and median CTC packages for NAAC/NIRF filings.
+78. Department & Batch Skill-Heatmap for T&P Training Interventions: Inspired by [Superset Data-Driven Continuous Improvement](https://joinsuperset.com/blogs/from-overwhelmed-to-empowered-why-universities-need-campus-placement-automation-software-now/), show the T&P Cell a visual breakdown of which skills (e.g., `System Design`, `TypeScript`, `SQL`, `Aptitude`) are weakest in the 3rd-year batch so targeted bootcamps can be scheduled before placement season.
+79. Pre-Placement Talk (PPT) RSVP & Attendance QR Scanner: Track mandatory attendance at company Pre-Placement Talks via QR scan so only attentive, registered candidates proceed to the online assessment round.
+80. External Internship NOC & 6-Month Industrial Training Logbook: Allow 4th-year students on semester-long internships to submit bi-weekly progress logs signed digitally by their corporate manager and college faculty coordinator.
+81. Verified Co-Curricular & Extra-Curricular Transcript Generator: Inspired by [Digii / CollPoll Student E-Portfolio](https://www.saasworthy.com/product/collpoll), let students export an official, college-stamped PDF supplement listing their verified hackathons, club leadership roles, research papers, and GitHub metrics alongside their academic CGPA.
+82. Inter-College Pool Campus Drive Coordinator: Allow the T&P Cell to invite partner colleges (e.g., across AKTU or regional clusters) into a scoped "Pool Campus Drive" room when a major recruiter hosts a regional hiring event.
+83. Scholarship & Financial Aid Eligibility Matcher: Alert eligible students automatically when central/state government scholarships, AICTE Pragati/Saksham grants, or corporate diversity fellowships open.
+84. Campus Poll & Policy Referendum Cards: Let the Dean Student Welfare or Student Council run verified, 1-roll-number-1-vote polls on fest dates, mess contractors, or lab timings.
+85. GitHub Student Developer Pack & Cloud Credits Claim Center: Inspired by [GitHub Student Developer Pack](https://education.github.com/pack), embed a dedicated checklist helping every student with a `@college.ac.in` domain claim free GitHub Copilot, 180 hours/month of GitHub Codespaces, AWS/Azure credits, and Namecheap domains.
+
+--------------------------------------------------------------------------------
+PART V: CONCRETE UI/UX CHANGES & REACT NATIVE REDESIGN ROADMAP (ITEMS #86–#120)
+--------------------------------------------------------------------------------
+86. Progressive Disclosure on `FeedScreen.tsx` (Replace 8-Tile Wall with "Today on Campus" Bento Strip):
+    - Current UI Issue: The 8-tile colorful module grid (`Skill Groups`, `Projects`, `Placement`, `Mentors`, `SIH Teams`, `Materials`, `Join Clubs`, `Suggestions`) takes up half the viewport above the feed.
+    - UI Change: Replace it with a compact 3-card horizontal **Bento Status Strip** (`Next Class / QR Attendance`, `2 Open Teammate Requests Matching Your Skills`, `3 New Super Dream Drives Eligible for Your 8.92 CGPA`) and move secondary utilities into a swipe-up Quick Action Bottom Sheet.
+87. Dedicated Center Floating Action Button (`+ Collaborate`) in Bottom Tab Bar:
+    - Current UI Issue: Posting a teammate request, adding a GitHub repo, or posting a faculty lab slot is buried inside separate screen headers.
+    - UI Change: Add a prominent center `+` action button in the bottom tab bar that opens a sleek modal sheet with 4 role-aware quick actions: `🤝 Ask for Teammates`, `🐙 Link GitHub Repo`, `🔬 Post Faculty Lab Slot`, and `🏛️ Post College Opening`.
+88. Unified Dual-Theme Design System (GitHub Dark Slate + LinkedIn Trust Blue + College Brand Accent):
+    - Current UI Issue: Light cards and dark `#0d1117` GitHub cards mix without a global dark/light mode toggle.
+    - UI Change: Inspired by [Canvas Mobile Dark Mode](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), implement a system-synced Light/Dark theme provider where each college workspace (`GLAU`, `AKTU-IET`, `KIET`, `AKGEC`, `JSSATE`) dynamically tints the primary accent color and college crest in the header.
+89. Sticky Segmented Filter Pills with Unread Counts on `FeedScreen.tsx`:
+    - Current UI Issue: The 3-pillar filter (`All`, `Student–Student`, `Student–Faculty`, `Student–College`) scrolls away as the user reads the feed.
+    - UI Change: Make the filter bar sticky below the header (`stickyHeaderIndices` in React Native `FlatList`) with live unread dot badges (e.g., `🤝 Teammates (4)`).
+90. Redesign "Looking for Teammates" Card into an Interactive Match Ticket (`FeedScreen.tsx` & `TeamsScreen.tsx`):
+    - Current UI Issue: Teammate cards show plain text pills for `existing_skills` and `missing_skills`.
+    - UI Change: Render a visual **"Skill Match Meter"** (e.g., `92% Match — You have React Native & Python!`), avatar stack of current squad members, visual slot indicators (`● ● ● ○ ○ 2 spots left`), and a 1-tap bottom-sheet pitch drawer.
+91. GitHub Repository Card Visual Upgrade (`ReposScreen.tsx`):
+    - Current UI Issue: Repo cards show static text for language, stars, forks, and commits.
+    - UI Change: Inspired by [Devfolio Builder Profile](https://devfolio.co/blog/dev-folio-profile/), add a multi-color GitHub language percentage bar (`68% TypeScript · 24% Python · 8% SQL`), a mini 7-day sparkline commit graph, a "Live Demo / APK" button alongside "View Code", and a "Looking for Contributors" badge.
+92. Interactive 52-Week Zoomable GitHub Contribution Heatmap (`ProfileScreen.tsx`):
+    - Current UI Issue: The heatmap in `ProfileScreen.tsx` displays a static 12-week grid without tooltips.
+    - UI Change: Make each heatmap square tappable (showing `14 commits on Nov 4 in galaxy-fusion-mobile`), add a toggle between `GitHub Commits`, `Hackathons & Labs`, and `Academic Attendance`, and display current/longest streak flames.
+93. "Proof-of-Work" Builder Folio Layout on `ProfileScreen.tsx`:
+    - Current UI Issue: `ProfileScreen.tsx` mixes personal portfolio, study materials, clubs, suggestions, and app feedback inside a single 5-pill switcher.
+    - UI Change: Inspired by [Devfolio Builder Profile](https://devfolio.co/blog/dev-folio-profile/), dedicate `ProfileScreen.tsx` 100% to the student's **Verified LinkedIn + GitHub Builder Folio** (`README.md` intro, Pinned Spotlight Projects, Verified CGPA & Courses, Faculty Endorsements, Hackathon Wins, and 1-Tap PDF Resume Export), and move `Materials` and `Clubs` into the Campus Hub exploration drawer.
+94. Placement Card "Eligibility Traffic-Light Badge" (`CareerScreen.tsx`):
+    - Current UI Issue: Eligibility text is shown inside a gray box below the job title.
+    - UI Change: Add a high-contrast pill in the top-right of every job card (`🟢 Eligible: CGPA 8.92 ≥ 7.5` or `🔴 Locked: Requires ECE Branch`) with an expandable checklist showing which exact criteria (`CGPA`, `Branch`, `Backlogs`, `GitHub Repo`) passed or failed.
+95. Swipeable Horizontal Sub-Navigation (`react-native-tab-view` / PagerView):
+    - Current UI Issue: Switching between sub-tabs in `TeamsScreen.tsx` and `CareerScreen.tsx` requires tapping top buttons and does not support horizontal finger swiping.
+    - UI Change: Wrap sub-tabs in a gesture-driven horizontal pager with animated underline indicators so students can swipe smoothly between `Ask Teammates <-> Find Peers <-> Skill Groups`.
+96. Bottom-Sheet Modals Instead of Inline Accordion Forms:
+    - Current UI Issue: Tapping `+ Submit Project`, `+ Post Job`, or `📊 Update Sem 1–8 CGPA` expands a tall inline form that pushes content down the scroll view.
+    - UI Change: Replace inline forms with smooth snap-point bottom sheets (`@gorhom/bottom-sheet` style) with keyboard-avoiding sticky submit buttons and backdrop dimming.
+97. Real-Time Chat UX Upgrade in `TeamsScreen.tsx` (`💬 Skill Groups`):
+    - Current UI Issue: Group chat messages show basic text bubbles without date separators, replies, or attachments.
+    - UI Change: Add swipe-to-reply on chat bubbles, pinned hackathon announcements at the top of the chat room, typing indicators (`Isha is typing...`), and quick-attach chips for sharing a GitHub repo card or teammate request directly inside chat.
+98. Global Command Palette & Universal Campus Search (`⌘K` / Pull-Down Search Bar):
+    - Current UI Issue: Search is currently isolated inside `TeamsScreen.tsx` (`Find Peers`).
+    - UI Change: Add a universal top search bar that searches across **Students** (by skill/roll no.), **GitHub Repos**, **Hackathon Squads**, **Faculty Research Labs**, **Placement Drives**, and **Study Materials** in one unified view.
+99. Skeleton Shimmer Placeholders & Pull-to-Refresh Haptics:
+    - Current UI Issue: Supabase data fetches update state without visual loading skeletons.
+    - UI Change: Add shimmer skeleton cards during Supabase queries, native `RefreshControl` pull-to-refresh on all 5 tabs, and subtle `expo-haptics` feedback when endorsing a post, starring a repo, or applying to a placement drive.
+100. Role-Specific Onboarding & Demo Mode Banner Redesign (`App.tsx` & `AuthScreen.tsx`):
+    - Current UI Issue: The `VIEW AS: ⚡ Student | 🎓 Faculty | 🏛️ College T&P` bar is always visible in the top header.
+    - UI Change: Move the Role Switcher into a collapsible floating "Demo Sandbox Pill" at the top-right (or inside the profile avatar long-press menu) so production users see a clean, distraction-free college header while evaluators can still switch roles in one tap.
+101. Biometric Passkey & College Email SSO (`AuthScreen.tsx`):
+    - Current UI Issue: Students type their roll number and password manually every session.
+    - UI Change: Inspired by [Ellucian Single Sign-On](https://www.ellucian.com/blog/college-mobile-apps-what-students-value), add `expo-local-authentication` (Face ID / Touch ID / Android Biometrics) and 1-tap Google Workspace `@gla.ac.in` / `@kiet.edu` OAuth login.
+102. Interactive Skill Tag Cloud with One-Tap Peer Filtering (`ProfileScreen.tsx` & `TeamsScreen.tsx`):
+    - UI Change: Make every skill pill (`React Native`, `PyTorch`, `ROS2`, `Figma`) across the entire app tappable—tapping any skill pill opens a filtered sheet showing all students, faculty labs, GitHub repos, and job openings in that college requiring that exact skill.
+103. Visual Semester-over-Semester SGPA Trend Line Chart (`CareerScreen.tsx`):
+    - UI Change: Render a clean SVG sparkline chart above the Semester 1–8 CGPA inputs (`8.8 -> 8.9 -> 9.0 -> 8.9 -> 9.1 -> 9.0`) so students and recruiters can visually see upward academic momentum.
+104. Notification Center Categorization & Action Buttons (`App.tsx`):
+    - Current UI Issue: Notifications modal shows a flat list of alerts.
+    - UI Change: Group notifications into `Teammate Invites`, `Placement Alerts`, and `Faculty Feedback`, with inline `[Accept Invite]` and `[View Drive]` buttons directly inside each notification card.
+105. Offline-First Persistence with AsyncStorage / MMKV (`src/lib/supabase.ts`):
+    - UI/Arch Change: Inspired by [Canvas Offline Content](https://community.instructure.com/en/kb/articles/388741-canvas-mobile-features), cache timetable, study materials, CGPA profile, and recent group messages locally on device so the app loads in `<100ms` even in low-signal basement labs or hostels.
+106. iOS & Android Home Screen Widgets:
+    - UI Change: Inspired by [Canvas Mobile Widgets](https://apps.apple.com/us/app/canvas-by-instructure/id480883488), provide a compact native home-screen widget showing today's next class room, overall attendance %, and upcoming placement/hackathon deadlines.
+107. Accessibility (WCAG AA Contrast, Dynamic Type & Screen Reader Labels):
+    - UI Change: Inspired by [Canvas VPAT 2.2 Accessibility](https://apps.apple.com/us/app/canvas-by-instructure/id480883488), add `accessibilityLabel` and `accessibilityRole` props to all `TouchableOpacity` buttons in `src/screens/*` and ensure minimum `44x44pt` touch targets on all action pills.
+108. Deep-Linking & QR Profile Sharing (`galaxyfusion://college/glau/student/23BCS014`):
+    - UI Change: Add a shareable QR code modal on `ProfileScreen.tsx` so students at a physical hackathon or career fair can scan each other's phones to connect and view verified GitHub + LinkedIn profiles immediately.
+109. Faculty & T&P Admin Analytics View (`CareerScreen.tsx`):
+    - UI Change: When logged in as `🎓 Faculty` or `🏛️ College T&P`, render an executive KPI header card above the openings list showing `Total Verified Students`, `Total Applied to Current Drive`, `Eligible Unapplied Students (Send Reminder)`, and `Top Campus GitHub Builders`.
+110. Gamified "Campus Builder Level" & Verified Badges (`ProfileScreen.tsx`):
+    - UI Change: Inspired by [Digii / CollPoll Gamification](https://www.saasworthy.com/product/collpoll) and [Devfolio Onchain/Builder Credentials](https://devfolio.co/blog/dev-folio-profile/), award verifiable profile badges (`SIH Finalist`, `100+ Club Commits`, `IEEE Co-Author`, `Top 5% CGPA`, `Open Source Mentor`) that appear beside a student's name in feed posts and teammate requests.
+111. Split-View Responsive Layout for iPad, Tablets & Desktop Web (`index.html` & `App.tsx`):
+    - Current UI Issue: The web preview renders inside a single `430px` mobile frame centered on screen.
+    - UI Change: Add a responsive toggle in the web preview (`📱 Mobile View` vs `💻 3-Column Desktop Dashboard`) where wide screens display the Left Navigation Rail, Center Collaboration Feed, and Right Live Teammates & Placement Radar simultaneously.
+112. Rich Media & Architecture Diagram Carousel on Project Cards (`ReposScreen.tsx`):
+    - UI Change: Allow students to attach up to 3 screenshots, a system architecture diagram, and a 60-second Loom/MP4 demo video to each repository card so non-coding recruiters and faculty can preview the project visually without cloning the repo.
+113. Smart Empty States with Actionable Prompts:
+    - UI Change: Whenever a filter returns zero results (e.g., filtering repos by `Rust` or searching peers for `Solidity`), display an illustration with a 1-tap CTA: `"No Rust builders found in GLAU yet — Start a Rust Skill Group or post a Teammate Ask!"`
+114. Micro-Animation Feedback on Endorsements, Stars & Applications:
+    - UI Change: Add spring scale animations (`Animated.spring`) on the `▲ Endorse`, `★ Star`, and `1-Tap Apply` buttons so every interaction feels tactile and responsive on iOS, Android, and Web.
+115. Verified Roll-Number Domain Guard & Privacy Controls (`ProfileScreen.tsx`):
+    - UI Change: Give students granular privacy toggles (`Show CGPA to T&P & Faculty Only`, `Show Phone/WhatsApp to Accepted Teammates Only`, `Publicize GitHub Portfolio Link for Recruiters`) so students control their sensitive academic data while remaining discoverable.
+116. Automated Hackathon Team Readiness Score (`TeamsScreen.tsx`):
+    - UI Change: Show a visual progress bar on every hackathon squad card (`Team Readiness: 80% — ✓ Frontend · ✓ Backend · ✓ ML · ⚠ Missing UI/UX Designer & Pitch Deck`) to nudge undecided peers to fill the final gap.
+117. Pinned "Urgent Campus Deadlines" Ticker Bar (`FeedScreen.tsx`):
+    - UI Change: Add a slim, dismissible countdown banner at the top of `FeedScreen.tsx` for time-sensitive college events (`⏰ Atlassian Super Dream Drive closes in 6h 14m · Apply Now →`).
+118. Side-by-Side Peer Comparison Drawer for Squad Leaders (`TeamsScreen.tsx`):
+    - UI Change: When multiple students request to join a hackathon squad or faculty research lab, let the team leader compare applicants side-by-side (`Skills`, `GitHub Commits`, `Verified CGPA`, `Past Hackathon Projects`) and accept with one tap.
+119. One-Tap "Export as Official SIH / Resume PDF" (`ProfileScreen.tsx` & `TeamsScreen.tsx`):
+    - UI Change: Let any student export a clean, college-branded 1-page resume PDF, and let any hackathon squad leader export a 1-page "Team Roster & Skills Sheet" PDF required for college internal hackathon registration.
+120. Live Supabase Realtime Presence Indicators (`TeamsScreen.tsx`):
+    - UI Change: Use Supabase Realtime Presence to show a live green dot (`🟢 14 peers online in React & React Native Builders`) on skill groups and teammate request cards to spark immediate conversations.
+
+================================================================================
+SECTION 4: PRIORITIZED IMPLEMENTATION PHASES FOR GALAXY FUSION
+================================================================================
+- Phase 1 (Immediate UI Polish & High-Impact Collaboration):
+  Implement Items #86 (Bento Status Strip), #87 (Center `+ Collaborate` FAB), #90 (Skill Match % Meter on Teammate Cards), #91 (GitHub Language Bar & Demo Link), #94 (Placement Eligibility Traffic-Light Pill), and #111 (Mobile vs. 3-Column Desktop Web Toggle).
+- Phase 2 (Daily ERP Utility Hooks):
+  Implement Items #1 (QR Classroom Attendance), #2 (Attendance Shortage Calculator), #3 (Interactive Timetable with Room Numbers), #4 ("What-If" CGPA Simulator), and #8 (Flip-Card Digital Campus ID).
+- Phase 3 (Deep Academic, Faculty & Placement Automation):
+  Implement Items #47 (Minor/Major B.Tech Project Lifecycle), #48 (GitHub Classroom Sync), #66 (Multi-Rule Placement Eligibility Engine), #67 (Multi-Stage Application Stepper), and #70 (College-Specific Company Interview Diaries).
+================================================================================
